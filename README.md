@@ -1,32 +1,24 @@
-ms-data-core-api
+pride-protein-inference
 ===============
 
-# About mz-data-core-api
+# About pride-protein-inference
 
-The primary purpose of ms-data-core-api library is to provide commonly used classes and Object Model for Proteomics Experiments. You may also find it useful for your own computational proteomics projects.
+The primary purpose of pride-protein-inference library is to provide different algorithms for protein inference in PRIDE Proteomics Experiments. You may also find it useful for your own computational proteomics projects.
 
 # How to cite it:
 
- * Wang, R., Fabregat, A., Ríos, D., Ovelleiro, D., Foster, J. M., Côté, R. G., ... & Vizcaíno, J. A. (2012). PRIDE Inspector: a tool to visualize and validate MS proteomics data. Nature biotechnology, 30(2), 135-137. [PDF File](http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf), [Pubmed Record](http://www.ncbi.nlm.nih.gov/pubmed/22318026)
- * Perez-Riverol, Y., Wang, R., Hermjakob, H., Müller, M., Vesada, V., & Vizcaíno, J. A. (2014). Open source libraries and frameworks for mass spectrometry based proteomics: A developer's perspective. Biochimica et Biophysica Acta (BBA)-Proteins and Proteomics, 1844(1), 63-76. [PDF File](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3898926/) [Pubmed Record](http://www.ncbi.nlm.nih.gov/pubmed/23467006)
-
+ 
 # Main Features
-* Data Structures to represent AminoAcids, Mass Table, etc.
-* Functions to compute different Properties such as isoelectric point, retention time, sequence length and masses.
-* Reference table of the main Ontology terms used in PRIDE-toolsuite. 
-* General functionalities and data structures classes missing in JDK, such as: Tuple.
-* General functionalities like checking email format and availability.
+* Data structure to handle protein inference such as Protein Groups, Peptides, Scores, Protein Inference Algorithms, etc 
+* Functions to compute Protein Inference Algorithms. 
+* Set of CVterms for Protein Inference Algorithms such as Protein Scores, PSMs scores, etc
+* Filtering PSM, Peptides and Proteins. 
 
 # The library provides four key modules:
 
-* mol: contains classes describing entities at the molecular level, such as: amino acids, neutrual losses, peptides and fragment ions.
-* gui: contains several GUI components, you can use them if you want to replicate some of the features in PRIDE Inspector.
-* data: contains data structures classes are missing from JDK, such as: Tuple.
-* util: contains a selection of convenient classes. For examples: for formatting protein related informations, for checking Internet availability or for verify email addresses.
-
 **Note**: the library is still evolving, we are committed to expand this library and add more useful classes.
 
-# Getting ms-data-core-api
+# Getting pride-protein-inference
 
 The zip file in the releases section contains the PRIDE Utilities jar file and all other required libraries.
 
@@ -37,8 +29,8 @@ PRIDE Utilities library can be used in Maven projects, you can include the follo
  ```maven
  <dependency>
    <groupId>uk.ac.ebi.pride.utilities</groupId>
-   <artifactId>ms-data-core-api</artifactId>
-   <version>0.1.23-SNAPSHOT</version>
+   <artifactId>pride-protein-inference</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
  </dependency> 
  ```
  ```maven
@@ -66,45 +58,127 @@ Please send us your feedback, including error reports, improvement suggestions, 
 
 # This library has been used in:
 
-* Wang, R., Fabregat, A., Ríos, D., Ovelleiro, D., Foster, J. M., Côté, R. G., ... & Vizcaíno, J. A. (2012). PRIDE Inspector: a tool to visualize and validate MS proteomics data. Nature biotechnology, 30(2), 135-137. [PDF File](http://www.nature.com/nbt/journal/v30/n2/pdf/nbt.2112.pdf), [Pubmed Record](http://www.ncbi.nlm.nih.gov/pubmed/22318026)
-* Vizcaíno, J. A., Côté, R. G., Csordas, A., Dianes, J. A., Fabregat, A., Foster, J. M., ... & Hermjakob, H. (2013). The PRoteomics IDEntifications (PRIDE) database and associated tools: status in 2013. Nucleic acids research, 41(D1), D1063-D1069. [PRIDE-Archive](http://www.ebi.ac.uk/pride/archive/)
 
-How to use ms-data-core-api
+How to use pride-protein-inference
 ===============
 
-# Using ms-data-core-api 
+# Using pride-protein-inference 
 
-Here we will show you how to use the ms-data-core-api library to calculate m/z delta and calculate theoretical mass of a given peptide.
+Here we will show you a simple example to compute protein inference in a mzIdentML file:
 
-### Calculate m/z Delta:
+### Compute Protein Inference:
 
-You can find the method for calculating m/z delta from MoleculeUtilities in uk.ac.ebi.pride.mol package. It requires four input parameters:
 
 ```java 
-/*
- * sequence is the peptide sequence in String,
- * precursorMz is the precusor m/z in double,
- * precursorCharge is the precursor charge in double,
- *ptmMasses is a list of post translational modifications in double.
-*/
+// ---------------------------------------------------------------------
 
-// Direct call on the method
-Double mzDelta = MolecularUtilitites.calculateDeltaMz(sequence, precursorMz, precursorCharge, ptmMasses);
+int allowedThreads = 4;
+boolean considerModifications = false;
+boolean filterPSMsOnImport = false;
+String fdrScoreAccession = CvScore.PSI_MASCOT_SCORE.getAccession();
+String peptideScoreAccession = CvScore.PSI_MASCOT_SCORE.getAccession();
+boolean oboLookup = false;
+
+Logger logger = Logger.getLogger("log.txt");
+
+inputFile = new File("sample-file-without-protein-group.mzid");
+
+
+// some testing variables
+logger.info("using " + inputFile.getAbsolutePath());
+		
+		
+// set up some filters
+List<AbstractFilter> filters = new ArrayList<AbstractFilter>();
+		
+AbstractFilter filter = new PSMScoreFilter(FilterComparator.less_equal, 0.01, false, CvScore.PSI_PSM_LEVEL_FDRSCORE.getAccession(), oboLookup);
+filters.add(filter);
+		
+filter = new PSMDecoyFilter(FilterComparator.equal, false, false);
+filters.add(filter);
+		
+		
+if (filterPSMsOnImport) {
+     importController = new PrideImportController(inputFile, filters);
+} else {
+     importController = new PrideImportController(inputFile);
+}
+        
+IntermediateStructureCreator structCreator = new IntermediateStructureCreator(allowedThreads);
+		
+logger.info("start importing data from the controller");
+importController.addAllSpectrumIdentificationsToStructCreator(structCreator);
+        
+        
+ logger.info("creating intermediate structure with\n\t"
+		+ structCreator.getNrSpectrumIdentifications() + " spectrum identifications\n\t"
+		+ structCreator.getNrPeptides() + " peptides\n\t"
+		+ structCreator.getNrProteins() + " protein accessions");
+		
+IntermediateStructure intermediateStructure = structCreator.buildIntermediateStructure();
+		
+// sort the PSMs by score
+		
+logger.info("sorting PSMs by score");
+List<IntermediatePeptideSpectrumMatch> psms = new ArrayList<IntermediatePeptideSpectrumMatch>(intermediateStructure.getAllIntermediatePSMs());
+
+logger.info("   obtained PSMs for sorting");
+		
+Collections.sort(psms, new IntermediatePSMComparator(fdrScoreAccession, oboLookup));
+logger.info("sorting done");
+		
+
+// then calculate the FDR and FDRScore		
+FDRUtilities.calculateFDR(psms, fdrScoreAccession);
+logger.info("   fdr calculation done");
+		
+FDRUtilities.calculateFDRScore(psms,  fdrScoreAccession, false);
+logger.info("   FDRScore calculation done");
+		
+		
+// perform the protein inference
+		
+PeptideScoring pepScoring = new PeptideScoringUseBestPSM(peptideScoreAccession, oboLookup);
+ProteinScoring protScoring = new ProteinScoringAdditive(false, pepScoring);
+		
+AbstractProteinInference proteinInference = new OccamsRazorInference(intermediateStructure, pepScoring, protScoring, filters, allowedThreads);
+		
+List<InferenceProteinGroup> inferenceGroups = proteinInference.calculateInference(considerModifications);
+		
+logger.info("inferred groups: " + inferenceGroups.size());
+        
+        
+// print out some information
+
+for (InferenceProteinGroup group : inferenceGroups) {
+	  StringBuilder groupText = new StringBuilder();
+	  for (IntermediateProtein protein : group.getProteins()) {
+		    if (groupText.length() > 0) {
+				groupText.append(',');
+			}
+				groupText.append(protein.getAccession());
+			}
+			Set<String> subAccessions = new HashSet<String>();
+			for (InferenceProteinGroup subGroup : group.getSubGroups()) {
+				for (IntermediateProtein subProt : subGroup.getProteins()) {
+					subAccessions.add(subProt.getAccession());
+				}
+			}
+			for (String subAccession : subAccessions) {
+				groupText.append(',');
+				groupText.append('[');
+				groupText.append(subAccession);
+				groupText.append(']');
+			}
+			groupText.append(" (");
+			groupText.append(group.getScore());
+			groupText.append(')');
+			logger.info(groupText);
+	}
+ }
+importController.close();
+
 ```
 
-### Calculate Theoretical Mass
 
-You can also find the method for calculating theoretical mass value from MoleculeUtilities. It needs two input parameters:
-
-```java
- /*
-  *sequence is the peptide sequence in String,  
-  *masses is a optional list array of masses you want to add as extras.
-  The following lines of code shows you how:
- */
-
- // Direct call on the method
- double result = MolecularUtilitites.calculateTheoreticalMass(sequence, masses);
-
- // Tip: Take a close look at other methods within MoleculeUtilitites, you might find them useful. 
-```
+Tip: In the next future we will provide more example that you might find them useful. 
