@@ -1,0 +1,150 @@
+
+NEEDED:
+- the SpectrumIdentificationItem's or SpectrumIdentificationResult's spectrumID
+
+
+URGENT:
+- Testing with mzidentml - with and without protein inference information
+               pride
+
+- comparisons
+
+
+afterwards:
+- how can a spectrumIdentification have the same score with different values? can it actually?
+
+- import multiple files (see also next note)
+
+- the PSMs must be grouped somewhere to support multiple search engine mixes
+  it should be possible to create a new merged "SpectrumIdentification" object
+  for the merged spectra.
+
+- implement obo lookup for scores (in ScoreUtilities)
+
+
+
+ideas:
+- at the moment, possible "sub-proteins" not passing filters are not shown at all (but removed)
+   --> maybe create them and show as "not passing/filtered out" sub-proteins
+
+
+
+Testing:
+
+--> file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-report_all-55merge_mascot_full.mzid
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/julian/.m2/repository/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/julian/.m2/repository/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+[04-Jun-2014 18:45:30 - WARN] "MzIdentML Configuration file: file:/home/julian/workspace/ms-data-core-api/target/classes/MzIdentMLElement.cfg.xml" (uk.ac.ebi.jmzidml.MzIdentMLElement:1100)
+[04-Jun-2014 18:45:30 - WARN] "MzIdentML Configuration file: file:/home/julian/workspace/ms-data-core-api/target/classes/MzIdentMLElement.cfg.xml" (uk.ac.ebi.jmzidml.MzIdentMLElement:1100)
+[04-Jun-2014 18:45:31 - DEBUG] "Indexing and keeping track of line numbers." (psidev.psi.tools.xxindex.index.XmlXpathIndexer:141)
+[04-Jun-2014 18:46:04 - INFO] "creating intermediate structure with
+	2308 spectrum identifications
+	2004 peptides
+	2044 protein accessions" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.AbstractProteinInference:77)
+[04-Jun-2014 18:46:04 - INFO] "start sorting clusters" (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreator:186)
+[04-Jun-2014 18:46:04 - INFO] "1771 sorted clusters" (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreator:215)
+[04-Jun-2014 18:46:04 - INFO] "<thread 1 has no more work after 343 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructorCreatorWorkerThread:82)
+[04-Jun-2014 18:46:04 - INFO] "<thread 3 has no more work after 416 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructorCreatorWorkerThread:82)
+[04-Jun-2014 18:46:04 - INFO] "<thread 2 has no more work after 551 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructorCreatorWorkerThread:82)
+[04-Jun-2014 18:46:04 - INFO] "<thread 0 has no more work after 461 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructorCreatorWorkerThread:82)
+[04-Jun-2014 18:46:04 - DEBUG] "intermediate structure contains 1771 clusters and 1854 groups" (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreator:173)
+Used Memory in JVM: 164
+	freeMemory in JVM: 17
+	totalMemory in JVM shows current size of java heap : 21
+	maxMemory in JVM: 181
+[04-Jun-2014 18:46:04 - INFO] "Occam's Razor calculateInference started..." (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference:149)
+[04-Jun-2014 18:46:04 - INFO] "using 4 threads for inference" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference:166)
+[04-Jun-2014 18:46:12 - INFO] "<inference worker 1 finished after 442 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:62)
+[04-Jun-2014 18:46:12 - INFO] "<inference worker 3 finished after 447 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:62)
+[04-Jun-2014 18:46:12 - INFO] "<inference worker 4 finished after 426 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:62)
+[04-Jun-2014 18:46:12 - INFO] "<inference worker 2 finished after 456 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:62)
+[04-Jun-2014 18:46:12 - INFO] "Occam's Razor calculateInference done" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference:192)
+Protein groups: 1811
+Used Memory in JVM: 143
+	freeMemory in JVM: 38
+	totalMemory in JVM shows current size of java heap : 43
+	maxMemory in JVM: 181
+
+
+--> file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-Test.mzid
+[06-Jun-2014 18:52:16 - INFO] "creating intermediate structure with
+	96293 spectrum identifications
+	68824 peptides
+	27996 protein accessions" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.AbstractProteinInference:78)
+Used Memory in JVM: 79
+	freeMemory in JVM: 14
+	totalMemory in JVM shows current size of java heap : 87
+	maxMemory in JVM: 93
+
+	
+	
+	
+	
+--> file:/mnt/data/uniNOBACKUP/PIA/testfiles/report-proteins-Test.mzid
+PSMScoreFilter psmScoreFilter =
+				new PSMScoreFilter(FilterComparator.greater_equal, 20.0, false, CvTermReference.MS_MASCOT_SCORE.getAccession());
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/home/julian/.m2/repository/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/home/julian/.m2/repository/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [ch.qos.logback.classic.util.ContextSelectorStaticBinder]
+[12-Jun-2014 09:17:33 - WARN] "MzIdentML Configuration file: file:/home/julian/workspace/ms-data-core-api/target/classes/MzIdentMLElement.cfg.xml" (uk.ac.ebi.jmzidml.MzIdentMLElement:1100)
+[12-Jun-2014 09:17:33 - WARN] "MzIdentML Configuration file: file:/home/julian/workspace/ms-data-core-api/target/classes/MzIdentMLElement.cfg.xml" (uk.ac.ebi.jmzidml.MzIdentMLElement:1100)
+[12-Jun-2014 09:17:36 - DEBUG] "Indexing and keeping track of line numbers." (psidev.psi.tools.xxindex.index.XmlXpathIndexer:141)
+Available peptide scores: 
+MS -> MS:1001171 -> Mascot:score
+[12-Jun-2014 09:20:56 - INFO] "start importing data from the controller" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.AbstractProteinInference:81)
+[12-Jun-2014 09:20:56 - INFO] "27996 proteins to go" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:47)
+[12-Jun-2014 09:23:35 - INFO] "processed proteins 1000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:26:08 - INFO] "processed proteins 2000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:28:41 - INFO] "processed proteins 3000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:31:10 - INFO] "processed proteins 4000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:33:43 - INFO] "processed proteins 5000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:36:11 - INFO] "processed proteins 6000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:38:49 - INFO] "processed proteins 7000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:41:23 - INFO] "processed proteins 8000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:43:48 - INFO] "processed proteins 9000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:46:16 - INFO] "processed proteins 10000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:48:46 - INFO] "processed proteins 11000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:51:33 - INFO] "processed proteins 12000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:54:13 - INFO] "processed proteins 13000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:56:51 - INFO] "processed proteins 14000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 09:59:28 - INFO] "processed proteins 15000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:02:04 - INFO] "processed proteins 16000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:04:42 - INFO] "processed proteins 17000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:07:35 - INFO] "processed proteins 18000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:10:15 - INFO] "processed proteins 19000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:12:44 - INFO] "processed proteins 20000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:15:05 - INFO] "processed proteins 21000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:17:43 - INFO] "processed proteins 22000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:20:22 - INFO] "processed proteins 23000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:22:59 - INFO] "processed proteins 24000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:25:31 - INFO] "processed proteins 25000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:28:00 - INFO] "processed proteins 26000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:30:31 - INFO] "processed proteins 27000 / 27996" (uk.ac.ebi.pride.utilities.pia.intermediate.impl.PrideImportController:86)
+[12-Jun-2014 10:33:00 - INFO] "creating intermediate structure with
+	3402 spectrum identifications
+	2674 peptides
+	1765 protein accessions" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.AbstractProteinInference:85)
+[12-Jun-2014 10:33:00 - INFO] "start sorting clusters" (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreator:294)
+[12-Jun-2014 10:33:00 - INFO] "1419 sorted clusters" (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreator:324)
+[12-Jun-2014 10:33:00 - INFO] "<thread 3 has no more work after 321 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreatorWorkerThread:78)
+[12-Jun-2014 10:33:00 - INFO] "<thread 0 has no more work after 220 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreatorWorkerThread:78)
+[12-Jun-2014 10:33:00 - INFO] "<thread 2 has no more work after 274 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreatorWorkerThread:78)
+[12-Jun-2014 10:33:00 - INFO] "<thread 1 has no more work after 604 clusters> " (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreatorWorkerThread:78)
+[12-Jun-2014 10:33:00 - DEBUG] "intermediate structure contains 1419 clusters and 1595 groups" (uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructureCreator:280)
+[12-Jun-2014 10:33:00 - INFO] "Occam's Razor calculateInference started..." (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference:154)
+[12-Jun-2014 10:33:00 - INFO] "using 4 threads for inference" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference:171)
+[12-Jun-2014 10:40:08 - INFO] "<inference worker 1 finished after 534 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:63)
+[12-Jun-2014 10:40:08 - INFO] "<inference worker 4 finished after 757 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:63)
+[12-Jun-2014 10:40:16 - INFO] "<inference worker 2 finished after 33 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:63)
+[12-Jun-2014 10:40:25 - INFO] "<inference worker 3 finished after 95 clusters>" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorWorkerThread:63)
+[12-Jun-2014 10:40:25 - INFO] "Occam's Razor calculateInference done" (uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference:200)
+inferred  groups: 1450
+Protein groups: 1450
+	
+max heap ~1.25G
+
