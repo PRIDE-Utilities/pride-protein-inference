@@ -5,6 +5,10 @@ pride-protein-inference
 
 The primary purpose of pride-protein-inference library is to provide different algorithms for protein inference in PRIDE Proteomics Experiments. You may also find it useful for your own computational proteomics projects.
 
+# License
+
+pride-protein-inference is a PRIDE API licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
+
 # How to cite it:
 
  
