@@ -5,12 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.ac.ebi.pride.utilities.data.core.Modification;
+import uk.ac.ebi.jmzidml.model.mzidml.Modification;
 
-/**
- * @author ypriverol
- * @author julian
- */
 
 public abstract class AbstractFilter {
 	
@@ -208,10 +204,21 @@ public abstract class AbstractFilter {
 				}
 				
 			case literal_list:
-                return objValue instanceof List<?> && satisfiesLiteralListFilter((List<String>) objValue);
+				if (objValue instanceof List<?>) {
+					return satisfiesLiteralListFilter((List<String>)objValue);
+				} else {
+					// TODO: throw exception or something
+					return false;
+				}
 				
 			case modification:
-                return objValue instanceof List<?> && satisfiesModificationFilter((List<Modification>) objValue);
+				if (objValue instanceof List<?>) {
+					/* TODO: reactivate modification */
+					return satisfiesModificationFilter((List<Modification>)objValue);
+				} else {
+					// TODO: throw exception or something
+					return false;
+				}
 			}
 			
 		}
@@ -309,7 +316,7 @@ public abstract class AbstractFilter {
 			boolean contains = false;
 			if (o != null) {
 				for (String objStr : o) {
-					if (objStr.equals(getFilterValue())) {
+					if (objStr.equals((String)getFilterValue())) {
 						contains = true;
 						break;
 					}
@@ -325,12 +332,12 @@ public abstract class AbstractFilter {
 			if (o != null) {
 				
 				if (o.size() > 0) {
-					if (o.get(0).equals(getFilterValue())) {
+					if (o.get(0).equals((String)getFilterValue())) {
 						// ok, the first one is our string
 						contains_only = true;
 						// but are all the others?
 						for (String objStr : o) {
-							if (!objStr.equals(getFilterValue())) {
+							if (!objStr.equals((String)getFilterValue())) {
 								contains_only = false;
 								break;
 							}

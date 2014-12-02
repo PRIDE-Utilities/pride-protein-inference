@@ -1,12 +1,14 @@
 package uk.ac.ebi.pride.utilities.pia.intermediate.prideimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.ebi.pride.utilities.data.controller.DataAccessController;
-import uk.ac.ebi.pride.utilities.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.utilities.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
+import uk.ac.ebi.jmzidml.model.mzidml.AbstractParam;
+import uk.ac.ebi.jmzidml.model.mzidml.Modification;
+import uk.ac.ebi.pride.utilities.data.controller.DataAccessController;
+import uk.ac.ebi.pride.utilities.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.utilities.term.CvTermReference;
 
 
@@ -16,7 +18,7 @@ import uk.ac.ebi.pride.utilities.term.CvTermReference;
  * @author julian
  *
  */
-public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptideSpectrumMatch {
+public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSpectrumMatch {
 	
 	/** a unique ID (cached on the first accession) */
 	private String id;
@@ -30,28 +32,14 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	/** the peptide ID for accession by a PRIDE dataAccessController */
 	private Comparable peptideID;
 	
-	/** the decoy status, when overriding the original status */
-	private Boolean isDecoy;
-	
-	/** the calculated FDR value */
-	private Double fdrValue;
-	
-	/** the calculated q-value */
-	private Double qValue;
-	
-	/** the calculated FDR Score value */
-	private Double fdrScore;
-	
 	
 	public PrideIntermediatePeptideSpectrumMatch(DataAccessController controller,
 			Comparable proteinID, Comparable peptideID) {
+		super();
+		this.id = null;
 		this.controller = controller;
 		this.proteinID = proteinID;
 		this.peptideID = peptideID;
-		this.isDecoy = null;
-		this.fdrValue = null;
-		this.qValue = null;
-		this.fdrScore = null;
 	}
 	
 	
@@ -67,6 +55,16 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	@Override
 	public String getControllerID() {
 		return controller.getUid();
+	}
+	
+	
+	/**
+	 * Getter for the spectrumIdentification object of the PRIDE implementation
+	 * 
+	 * @return
+	 */
+	private SpectrumIdentification getSpectrumIdentification() {
+		return controller.getPeptideByIndex(proteinID, peptideID).getSpectrumIdentification();
 	}
 	
 	
@@ -95,89 +93,126 @@ public class PrideIntermediatePeptideSpectrumMatch implements IntermediatePeptid
 	
 	
 	@Override
-	public Boolean getIsDecoy() {
-		if (isDecoy != null) {
-			return isDecoy;
-		} else {
-			boolean decoy = true;
+	public List<String> getScoreAccessions() {
+		List<String> scoreAccessions = new ArrayList<String>();
+		
+		for (CvTermReference cvTerm
+				: controller.getPeptideScore(proteinID, peptideID).getCvTermReferenceWithValues()) {
+			scoreAccessions.add(cvTerm.getAccession());
+		}
+		
+		return scoreAccessions;
+	}
+	
+	
+	@Override
+	public String getSpectrumId() {
+		// not supported by pride
+		return null;
+	}
+	
+	
+	@Override
+	public Double getExperimentalMassToCharge() {
+		return getSpectrumIdentification().getExperimentalMassToCharge();
+	}
+	
+	
+	@Override
+	public Double getDeltaMass() {
+		return getSpectrumIdentification().getExperimentalMassToCharge() - 
+				getSpectrumIdentification().getCalculatedMassToCharge();
+	}
+	
+	
+	@Override
+	public Double getRetentionTime() {
+		// not supported by pride
+		return null;
+	}
+
+
+	@Override
+	public Integer getCharge() {
+		return getSpectrumIdentification().getChargeState();
+	}
+	
+	
+	@Override
+	public Integer getMissedCleavages() {
+		// missed cleavages are not given in mzIdentML etc.
+		return null;
+	}
+	
+	
+	@Override
+	public String getSequence() {
+		return controller.getPeptideByIndex(proteinID, peptideID).getSequence();
+	}
+	
+	
+	@Override
+	public List<Modification> getModifications() {
+		List<Modification> modifications = new ArrayList<Modification>();
+		
+		for (uk.ac.ebi.pride.utilities.data.core.Modification prideMod
+				: controller.getPeptideByIndex(proteinID, peptideID).getModifications()) {
+			Modification mod = new Modification();
 			
-			for (PeptideEvidence pepEvidence : getSpectrumIdentification().getPeptideEvidenceList()) {
-				decoy &= pepEvidence.isDecoy();
-				if (!decoy) {
-					// as soon as it is no more a decoy, return false
-					return false;
+			Double massDelta = null;
+			int count = 0;
+			for (Double delta :	prideMod.getAvgMassDelta()) {
+				if (delta != null) {
+					if (massDelta != null) {
+						massDelta += delta;
+					} else {
+						massDelta = delta;
+					}
+					count++;
 				}
 			}
+			if (massDelta != null) {
+				massDelta /= count;
+				mod.setAvgMassDelta(massDelta);
+			}
 			
-			return decoy;
+			mod.setLocation(prideMod.getLocation());
+			
+			massDelta = null;
+			count = 0;
+			for (Double delta :	prideMod.getMonoisotopicMassDelta()) {
+				if (delta != null) {
+					if (massDelta != null) {
+						massDelta += delta;
+					} else {
+						massDelta = delta;
+					}
+					count++;
+				}
+			}
+			if (massDelta != null) {
+				massDelta /= count;
+				mod.setMonoisotopicMassDelta(massDelta);
+			}
+			
+			mod.getResidues().addAll(prideMod.getResidues());
+			
+			mod.getCvParam().addAll(PrideUtilities.convertCvParams(prideMod.getCvParams()));
+			
+			modifications.add(mod);
 		}
-	}
-	
-	
-	@Override
-	public void setIsDecoy(Boolean isDecoy) {
-		this.isDecoy = isDecoy;
-	}
-	
-	
-	@Override
-	public SpectrumIdentification getSpectrumIdentification() {
-		return controller.getPeptideByIndex(proteinID, peptideID).getSpectrumIdentification();
-	}
-	
-	
-	@Override
-	public void setFDR(Double fdr) {
-		this.fdrValue = fdr;
-	}
-	
-	
-	@Override
-	public Double getFDR() {
-		return fdrValue;
-	}
-	
-	
-	@Override
-	public void setQValue(Double value) {
-		this.qValue = value;
-	}
-	
-	
-	@Override
-	public Double getQValue() {
-		return qValue;
-	}
-	
-	
-	@Override
-	public void setFDRScore(Double fdrScore) {
-		this.fdrScore = fdrScore;
-	}
-	
-	
-	@Override
-	public Double getFDRScore() {
-		return fdrScore;
-	}
-	
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-        if (obj == null || !(obj instanceof IntermediatePeptideSpectrumMatch)) return false;
 		
-        IntermediatePeptideSpectrumMatch psm = (IntermediatePeptideSpectrumMatch)obj;
-
-        return getID().equals(psm.getID()) && getSpectrumIdentification().equals(psm.getSpectrumIdentification());
-    }
+		return modifications;
+	}
 	
 	
 	@Override
-	public int hashCode() {
-        int result = getID().hashCode();
-        result = 31 * result + peptideID.hashCode();
-        result = 31 * result + proteinID.hashCode();
-        return result;
+	public List<AbstractParam> getParams() {
+		List<AbstractParam> params = new ArrayList<AbstractParam>();
+		
+		params.addAll(PrideUtilities.convertCvParams(getSpectrumIdentification().getCvParams()));
+		params.addAll(PrideUtilities.convertUserParams(getSpectrumIdentification().getUserParams()));
+		
+		return params;
 	}
 }

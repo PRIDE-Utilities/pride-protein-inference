@@ -67,7 +67,11 @@ public class PSMQValueFilter extends AbstractFilter {
 
 	@Override
 	public boolean supportsClass(Object c) {
-        return c instanceof IntermediatePeptideSpectrumMatch;
+		if (c instanceof IntermediatePeptideSpectrumMatch) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

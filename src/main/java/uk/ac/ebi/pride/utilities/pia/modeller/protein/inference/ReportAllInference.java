@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
@@ -31,7 +32,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.protein.ProteinScoring;
 public class ReportAllInference extends AbstractProteinInference {
 	
 	/** the logger for this class */
-	private static final Logger logger= Logger.getLogger(ReportAllInference.class);
+	private static final Logger logger =  LoggerFactory.getLogger(ReportAllInference.class);
 	
 	/** the human readable name of this filter */
 	protected static final String name = "Report All";
@@ -194,7 +195,7 @@ public class ReportAllInference extends AbstractProteinInference {
 			// now create the proteins from the groups, which are in clusterReportGroups
 			for (IntermediateGroup group : clusterReportGroups) {
 				InferenceProteinGroup proteinGroup =
-						new InferenceProteinGroup(createProteinGroupID(group), considerModifications);
+						new InferenceProteinGroup(createProteinAmbiguityGroupID(group), considerModifications);
 				
 				// add the proteins to the group
 				for (IntermediateProtein interProt : group.getProteins()) {

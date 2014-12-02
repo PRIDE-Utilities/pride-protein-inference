@@ -49,7 +49,6 @@ public class ScoreUtilities {
 	 * @return an int smaller 0, if score1 is considered better than score 2, 0
 	 * if both are considered to be equal, bigger 0 if score2 is better than
 	 * score1
-     * Todo: Review this can cause probable bugs
 	 */
 	public static int compareValues(Double score1, Double score2, boolean higherScoreBetter) {
 		if ((score1 == null) && 

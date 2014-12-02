@@ -2,11 +2,17 @@ package uk.ac.ebi.pride.utilities.pia.modeller.fdr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
-import uk.ac.ebi.pride.utilities.pia.modeller.filter.psm.PSMAccessionsFilter;
+import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
+import uk.ac.ebi.pride.utilities.pia.modeller.filter.protein.ProteinAccessionFilter;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoreUtilities;
 
 
@@ -18,13 +24,18 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoreUtilities;
  */
 public class FDRUtilities {
 	
+	/** logger for this class */
+	private static final Logger logger =  LoggerFactory.getLogger(FDRUtilities.class);
+	
+	
 	/**
 	 * Calculate the FDR on the given score sorted List of
 	 * {@link FDRComputableByDecoys} objects.
 	 * 
 	 * The item with the best score must be the first in the list, the worst
 	 * score the last.
-	 *
+	 * 
+	 * @param reportItems
 	 */
 	public static <T extends FDRComputableByDecoys> void calculateFDR(List<T> items, String scoreAccession) {
 		double fdr;
@@ -195,31 +206,38 @@ public class FDRUtilities {
 			
 			item.setFDRScore((item.getScore(scoreAccession)-sLast)*g + qLast);
 		}
-		
-		
-		System.err.println("decoys: " + nrDecoys + " targets: " + nrTargets);
 	}
 	
 	
 	/**
-	 * This function marks the PSMs, which pass the given decoysFilter, as
-	 * decoys for a subsequent FDR estimation.
+	 * This function marks the intermediateProteins of the PSMs, which pass the
+	 * given decoysFilter, as decoys for a subsequent FDR estimation.
 	 * 
-	 * @param psms 
+	 * @param psms the PSMs, of which the  proteins are tagged
 	 * @param decoyFilter the filter which specifies the decoys
 	 * @return the number of decoys in the list
 	 */
 	public static int markDecoys(List<IntermediatePeptideSpectrumMatch> psms,
-			PSMAccessionsFilter decoysFilter) {
+			ProteinAccessionFilter decoysFilter) {
 		int count = 0;
+		Set<String> proteinsDone = new HashSet<String>();
+		
 		for (IntermediatePeptideSpectrumMatch psm : psms) {
-			if (decoysFilter.satisfiesFilter(psm)) {
-				psm.setIsDecoy(true);
-				count++;
-			} else {
-				psm.setIsDecoy(false);
+			for (IntermediateProtein protein : psm.getPeptide().getAllProteins()) {
+				String protAccession = protein.getAccession();
+				if (!proteinsDone.contains(protAccession)) {
+					if (decoysFilter.satisfiesFilter(protein)) {
+						protein.setIsDecoy(true);
+						count++;
+					} else {
+						protein.setIsDecoy(false);
+					}
+					proteinsDone.add(protAccession);
+				}
 			}
 		}
+		
+		logger.info("decoys marked (" + count + "/" + proteinsDone.size() + ")");
 		return count;
 	}
 }

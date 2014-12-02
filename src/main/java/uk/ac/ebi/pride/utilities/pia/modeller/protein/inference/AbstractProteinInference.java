@@ -1,9 +1,9 @@
 package uk.ac.ebi.pride.utilities.pia.modeller.protein.inference;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import uk.ac.ebi.pride.utilities.data.core.DBSequence;
-import uk.ac.ebi.pride.utilities.data.core.ProteinGroup;
+import uk.ac.ebi.jmzidml.model.mzidml.Modification;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
@@ -13,7 +13,13 @@ import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterUtilities;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.peptide.PeptideScoring;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.protein.ProteinScoring;
 
-import java.util.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -32,7 +38,7 @@ import java.util.*;
 public abstract class AbstractProteinInference {
 	
 	/** the logger for this class */
-	private static final Logger logger= Logger.getLogger(AbstractProteinInference.class);
+	private static final Logger logger=  LoggerFactory.getLogger(AbstractProteinInference.class);
 	
 	/** list of the settings. */
 	protected List<AbstractFilter> filters;
@@ -49,13 +55,18 @@ public abstract class AbstractProteinInference {
 	/** the PIA intermediate structure */
 	protected IntermediateStructure intermediateStructure;
     
+	/** round to two decimals */
+	private static final DecimalFormat roundTwoDecimals = new DecimalFormat("#.##");
     
+	
     /**
      * The constructor works using a DataAccessController. Any of the current
      * implementations of this class should use this controller to retrieve the
      * psm, peptide and protein information.
-     *
+     * 
+     * @param controller
      * @param filters any filters, which should be applied
+     * @param filterPSMsOnImport if true, the PSMs hich fo not pass teh filtering are not imported into the intermediate structure
      * @param nrThreads
      */
 	public AbstractProteinInference(IntermediateStructure intermediateStructure,
@@ -76,28 +87,11 @@ public abstract class AbstractProteinInference {
      * groups.
      * 
      * @param considerModifications
+     * @param psmSetSettings
      * @return
      */
     public abstract List<InferenceProteinGroup> calculateInference(
     		boolean considerModifications);
-    
-    
-    /**
-     * Create the list of {@link ProteinGroup}s (i.e. ProteinAmbiguityGroups in
-     * mzIdentML)
-     * 
-     * @param interferedProteins
-     * @return
-     */
-    public List<ProteinGroup> createProteinGroups(List<InferenceProteinGroup> interferedProteins) {
-    	List<ProteinGroup> proteinGroups = new ArrayList<ProteinGroup>(interferedProteins.size());
-    	
-    	for (InferenceProteinGroup interGroup : interferedProteins) {
-    		proteinGroups.add(interGroup.createProteinGroup());
-    	}
-    	
-    	return proteinGroups;
-    }
     
     
 	/**
@@ -158,8 +152,8 @@ public abstract class AbstractProteinInference {
 					for (IntermediatePeptideSpectrumMatch psm : pep.getAllPeptideSpectrumMatches()) {
 						if (FilterUtilities.satisfiesFilterList(psm, filters)) {
 							// all filters on PSM level are satisfied -> use this PSM
-							Comparable pepID = 
-									psm.getSpectrumIdentification().getPeptideSequence().getId();
+							Comparable pepID = getPSMKey(psm, considerModifications);
+							
 							// get the peptide of this PSM
 							IntermediatePeptide psmsPeptide = groupsPepsMap.get(pepID);
 							if (psmsPeptide == null) {
@@ -231,19 +225,49 @@ public abstract class AbstractProteinInference {
 	
 	/**
 	 * Return a peptide key, depending on whether the modifications are taken
+	 * into account or not. The same setting for considerModifications must have
+	 * been used while creating the peptide.
+	 * 
+	 * @param peptide
+	 * @param considerModifications
+	 * @return
+	 */
+	static public final Comparable getPeptideKey(IntermediatePeptide peptide, boolean considerModifications) {
+		if (considerModifications) {
+			// return one of the PSMs' keys
+			return getPSMKey(peptide.getAllPeptideSpectrumMatches().get(0), considerModifications);
+		} else {
+			// just return the sequence
+			return peptide.getSequence();
+		}
+	}
+	
+	
+	/**
+	 * Returns a psm key, depending on whether the modifications are taken
 	 * into account or not.
 	 * 
 	 * @param peptide
 	 * @param considerModifications
 	 * @return
 	 */
-	static public Comparable getPeptideKey(IntermediatePeptide peptide, boolean considerModifications) {
+	static public final Comparable getPSMKey(IntermediatePeptideSpectrumMatch psm, boolean considerModifications) {
 		if (considerModifications) {
-			// return one of the PSMs' peptideSequence's IDs (these include the sequence and mods)
-			return peptide.getAllPeptideSpectrumMatches().get(0).getSpectrumIdentification().getPeptideSequence().getId();
+			StringBuilder sbKey = new StringBuilder(psm.getSequence());
+			
+			for (Modification mod : psm.getModifications()) {
+				sbKey.append('_');
+				sbKey.append(mod.getLocation());
+				sbKey.append(':');
+				sbKey.append(roundTwoDecimals.format(mod.getMonoisotopicMassDelta()));
+			}
+			
+			
+			logger.info("Hallo psm " + sbKey.toString());
+			return sbKey.toString();
 		} else {
 			// just return the sequence
-			return peptide.getSequence();
+			return psm.getSequence();
 		}
 	}
 	
@@ -253,19 +277,8 @@ public abstract class AbstractProteinInference {
 	 * @param group
 	 * @return
 	 */
-	public String createProteinGroupID(IntermediateGroup group) {
+	public String createProteinAmbiguityGroupID(IntermediateGroup group) {
 		return "PAG_" + group;
-	}
-	
-	
-	/**
-	 * Ceates a unique ID for a ProteinDetectionHypothesis from the group ID
-	 * @param group
-	 * @return
-	 */
-	public String createProteinID(IntermediateGroup group, DBSequence dbSeq) {
-		return "PDH_" + dbSeq.getAccession() + "_"
-				+ createProteinGroupID(group);
 	}
 	
 	

@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 /**
@@ -25,7 +27,7 @@ public class IntermediateStructureCreatorWorkerThread extends Thread {
 	
 	
 	/** logger for this class */
-	private static final Logger logger = Logger.getLogger(IntermediateStructureCreatorWorkerThread.class);
+	private static final Logger logger = LoggerFactory.getLogger(IntermediateStructureCreatorWorkerThread.class);
 	
 	
 	public IntermediateStructureCreatorWorkerThread(int ID, IntermediateStructureCreator parent) {
@@ -39,7 +41,7 @@ public class IntermediateStructureCreatorWorkerThread extends Thread {
 	@Override
 	public void run() {
 		int workedClusters = 0;
-		Map<Comparable, Set<Comparable>> cluster;
+		Map<Comparable, Set<String>> cluster;
 		
 		// get the next available cluster from the parent
 		cluster = parent.getNextCluster();
@@ -48,18 +50,14 @@ public class IntermediateStructureCreatorWorkerThread extends Thread {
 			Map<Integer, IntermediateGroup> subGroups =
 					new HashMap<Integer, IntermediateGroup>();
 			
-			// mapping from the dbSequence IDs to the intermediateProteins
-			Map<Comparable, IntermediateProtein> dbSeqsToProteins =
-					new HashMap<Comparable, IntermediateProtein>();
-			
-			for (Map.Entry<Comparable, Set<Comparable>> pepIt : cluster.entrySet()) {
+			for (Map.Entry<Comparable, Set<String>> pepIt : cluster.entrySet()) {
 				
 				IntermediatePeptide pep = parent.getPeptide(pepIt.getKey());
 				
 				Set<IntermediateProtein> proteins =
 						new HashSet<IntermediateProtein>(pepIt.getValue().size());
-				for (Comparable proteinID : pepIt.getValue()) {
-					proteins.add(parent.getProtein(proteinID));
+				for (String proteinAccession : pepIt.getValue()) {
+					proteins.add(parent.getProtein(proteinAccession));
 				}
 				
 				insertIntoMap(pep, proteins, subGroups);
@@ -302,10 +300,13 @@ public class IntermediateStructureCreatorWorkerThread extends Thread {
 		}
 		
 		// check if all of the group's proteins are in the given set
-        return !((group.getProteins() != null) &&
-                !proteins.containsAll(group.getProteins()));
-
-    }
+		if ((group.getProteins() != null) && 
+				!proteins.containsAll(group.getProteins())) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 	
 	/**

@@ -16,7 +16,6 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoringItemType;
  * A peptide class, which is used in the intermediate structure.
  * 
  * @author julian
- * @author ypriverol
  *
  */
 public class IntermediatePeptide {
@@ -67,7 +66,7 @@ public class IntermediatePeptide {
 	
 	
 	/**
-	 * Returns the ID comoputed by the given arguments.
+	 * Returns the ID computed by the given arguments.
 	 * <p>
 	 * This is for probable future integration of modifications
 	 * 
@@ -117,6 +116,7 @@ public class IntermediatePeptide {
 	public boolean addPeptideSpectrumMatch(IntermediatePeptideSpectrumMatch spectrumIdentification) {
 		if (!peptideSpectrumMatches.containsKey(spectrumIdentification.getID())) {
 			peptideSpectrumMatches.put(spectrumIdentification.getID(), spectrumIdentification);
+			spectrumIdentification.setPeptide(this);
 			
 			if (psmsPassingFilter != null) {
 				psmsPassingFilter.add(spectrumIdentification.getID());
@@ -175,6 +175,19 @@ public class IntermediatePeptide {
 	 */
 	public List<IntermediatePeptideSpectrumMatch> getAllPeptideSpectrumMatches() {
 		return new ArrayList<IntermediatePeptideSpectrumMatch>(peptideSpectrumMatches.values());
+	}
+	
+	
+	/**
+	 * Returns all proteins (if the group is assigned)
+	 * @return
+	 */
+	public Set<IntermediateProtein> getAllProteins() {
+		if (group != null) {
+			return group.getAllProteins();
+		} else {
+			return null;
+		}
 	}
 	
 	

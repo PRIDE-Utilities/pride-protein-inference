@@ -1,5 +1,9 @@
 package uk.ac.ebi.pride.utilities.pia.intermediate;
 
+import java.util.List;
+
+import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
+
 
 /**
  * An interface for the data import controllers for PIA input files.
@@ -14,7 +18,6 @@ public interface DataImportController {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
 	public Comparable getID();
 	
 	
@@ -27,11 +30,12 @@ public interface DataImportController {
 	
 	
 	/**
-	 * Adds all spectrum Identifications to the {@link IntermediateStructureCreator}
+	 * Adds the filtered PSMs to the {@link IntermediateStructureCreator}.
+	 * Filtering is ok, if the used inference methods are not interfered by it.
 	 * 
 	 * @param structCreator
 	 */
-	public void addAllSpectrumIdentificationsToStructCreator(IntermediateStructureCreator structCreator);
+	public void addSpectrumIdentificationsToStructCreator(IntermediateStructureCreator structCreator, List<AbstractFilter> filters);
 	
 	
 	/**

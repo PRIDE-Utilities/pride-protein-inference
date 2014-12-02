@@ -1,24 +1,15 @@
 package uk.ac.ebi.pride.utilities.pia.modeller.protein.inference;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import uk.ac.ebi.pride.utilities.data.core.DBSequence;
-import uk.ac.ebi.pride.utilities.data.core.Peptide;
-import uk.ac.ebi.pride.utilities.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.utilities.data.core.Protein;
-import uk.ac.ebi.pride.utilities.data.core.ProteinGroup;
-import uk.ac.ebi.pride.utilities.data.core.Score;
-import uk.ac.ebi.pride.utilities.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
-import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoringItemType;
+
 
 /**
  * This group bundles the information about an inferred protein group.
@@ -53,7 +44,8 @@ public class InferenceProteinGroup {
 	
 	/**
 	 * Basic constructor
-	 *
+	 *  
+	 * @param sequence
 	 */
 	public InferenceProteinGroup(String id, boolean considerModifications) {
 		this.ID = id;
@@ -92,6 +84,7 @@ public class InferenceProteinGroup {
 	
 	/**
 	 * Adds one IntermediatePeptide to the map of peptides
+	 * @param specID
 	 * @return
 	 */
 	public IntermediatePeptide addPeptide(IntermediatePeptide peptide) {
@@ -103,6 +96,7 @@ public class InferenceProteinGroup {
 	
 	/**
 	 * Adds a collection of IntermediatePeptides to the map of peptides
+	 * @param specID
 	 * @return
 	 */
 	public boolean addPeptides(Collection<IntermediatePeptide> peptides) {
@@ -129,6 +123,7 @@ public class InferenceProteinGroup {
 	
 	/**
 	 * Getter for the protein score. If the score is not given, it may be null
+	 * or {@value Double#NaN}. 
 	 * 
 	 * @return
 	 */
@@ -169,7 +164,8 @@ public class InferenceProteinGroup {
 	
 	/**
 	 * Sets the scoring type of the stated peptide to the given {@link ScoringItemType}.
-	 *
+	 * 
+	 * @param psmID
 	 */
 	public void setPeptidesScoringType(IntermediatePeptide peptide, ScoringItemType type) {
 		if (peptideScorings == null) {
@@ -186,6 +182,8 @@ public class InferenceProteinGroup {
 	
 	/**
 	 * Returns the {@link ScoringItemType} of the peptide
+	 * 
+	 * @param psmID
 	 * @return
 	 */
 	public ScoringItemType getPeptidesScoringType(IntermediatePeptide peptide) {
@@ -209,7 +207,8 @@ public class InferenceProteinGroup {
 	
 	
 	/**
-	 * Returns the peptides with the given {@link ScoringItemType}, which also pass the 
+	 * Returns the peptides with the given {@link ScoringItemType}
+	 * 
 	 * @return
 	 */
 	public Set<IntermediatePeptide> getPeptidesWithScoringType(ScoringItemType type) {
@@ -229,74 +228,18 @@ public class InferenceProteinGroup {
 	}
 	
 	
-	/**
-	 * Creates a {@link ProteinGroup} (a protein ambiguity group in mzIdentML)
-	 * from this inferred protein group.
-	 * @return
-	 */
-	public ProteinGroup createProteinGroup() {
-		Set<DBSequence> dbSequences = new HashSet<DBSequence>();
-		for (IntermediateProtein interProt : proteins) {
-			dbSequences.add(interProt.getDBSequence());
-		}
-		
-		Set<Peptide> peptideHypotheses = new HashSet<Peptide>();
-		for (IntermediatePeptide peptide : getPeptides()) {
-			for (IntermediatePeptideSpectrumMatch psm : peptide.getPeptideSpectrumMatches()) {
-				SpectrumIdentification specID = psm.getSpectrumIdentification();
-				for (PeptideEvidence pepEvidence : specID.getPeptideEvidenceList()) {
-					Peptide pep = new Peptide(pepEvidence, specID);
-					peptideHypotheses.add(pep);
-					
-					// TODO: set the scoring information
-				}
-			}
-		}
-		
-		List<Protein> proteins = new ArrayList<Protein>();
-		for (DBSequence dbSeq : dbSequences) {
-			Score score = null;
-			double sequenceCoverage = -1; // TODO: include calculation of this coverage
-			
-			Protein protein = new Protein(
-					ID + "_" + dbSeq.getAccession(),
-					dbSeq.getAccession(),
-					dbSeq,
-					true /*passThreshold*/,
-					new ArrayList<Peptide>(peptideHypotheses),
-					score,
-					-1 /*threshold*/,
-					sequenceCoverage,
-					null /*gel*/);
-			
-			
-			proteins.add(protein);
-		}
-		
-		// the sub-groups proteins will become proteins which do not pass the threshold
-		for (InferenceProteinGroup subGroup : subGroups) {
-			ProteinGroup subProteinGroup = subGroup.createProteinGroup();
-			
-			for (Protein subProtein : subProteinGroup.getProteinDetectionHypothesis()) {
-				subProtein.setId(ID + "_" + subProtein.getDbSequence().getAccession());
-				subProtein.setPassThreshold(false);
-				proteins.add(subProtein);
-			}
-		}
-		
-		return new ProteinGroup(ID, ID, proteins);
-	}
-	
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 		
 		InferenceProteinGroup group = (InferenceProteinGroup)obj;
-
-        return ID == group.ID && !((proteins != null) ? !proteins.equals(group.proteins) : (group.proteins != null)) && !((intermediatePeptides != null) ? !intermediatePeptides.equals(group.intermediatePeptides) : (group.intermediatePeptides != null)) && !((subGroups != null) ? !subGroups.equals(group.subGroups) : (group.subGroups != null));
-    }
+		
+		if (ID != group.ID) return false;
+		return !((proteins != null) ? !proteins.equals(group.proteins) : (group.proteins != null)) &&
+				!((intermediatePeptides != null) ? !intermediatePeptides.equals(group.intermediatePeptides) : (group.intermediatePeptides != null)) &&
+				!((subGroups != null) ? !subGroups.equals(group.subGroups) : (group.subGroups != null));
+	}
 	
 	
 	@Override

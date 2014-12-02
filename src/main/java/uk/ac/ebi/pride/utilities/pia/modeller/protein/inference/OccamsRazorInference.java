@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import uk.ac.ebi.pride.utilities.data.core.ProteinGroup;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateStructure;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
@@ -37,7 +37,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.protein.ProteinScoring;
 public class OccamsRazorInference extends AbstractProteinInference {
 	
 	/** the logger for this class */
-	private static final Logger logger= Logger.getLogger(OccamsRazorInference.class);
+	private static final Logger logger=  LoggerFactory.getLogger(OccamsRazorInference.class);
 	
 	/** the human readable name of this filter */
 	protected static final String name = "Occam's Razor";

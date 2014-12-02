@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateGroup;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
@@ -34,7 +35,7 @@ public class OccamsRazorWorkerThread extends Thread {
 	
 	
 	/** logger for this class */
-	private static final Logger logger = Logger.getLogger(OccamsRazorWorkerThread.class);
+	private static final Logger logger =  LoggerFactory.getLogger(OccamsRazorWorkerThread.class);
 	
 	
 	public OccamsRazorWorkerThread(int ID,
@@ -120,7 +121,7 @@ public class OccamsRazorWorkerThread extends Thread {
 			
 			// no existing group with same PSMs -> create new group
 			if (!addedToExistingGroup) {
-				String proteinGroupID = parent.createProteinGroupID(group);
+				String proteinGroupID = parent.createProteinAmbiguityGroupID(group);
 				InferenceProteinGroup proteinGroup = new InferenceProteinGroup(proteinGroupID, considerModifications);
 				
 				// add the proteins
@@ -271,7 +272,7 @@ public class OccamsRazorWorkerThread extends Thread {
 					groupsWithMostPeptides.add(protein);
 				}
 			}
-			//Todo: Check probable bug
+			
 			for (InferenceProteinGroup protein : groupsWithMostPeptides) {
 				reportProteins.add(protein);
 				reportedPeptides.addAll(proteinIDsToPeptideIDs.get(protein.getID()));

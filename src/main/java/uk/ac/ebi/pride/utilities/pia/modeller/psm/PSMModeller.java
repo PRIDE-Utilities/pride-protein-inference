@@ -1,16 +1,21 @@
 package uk.ac.ebi.pride.utilities.pia.modeller.psm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
+import uk.ac.ebi.pride.utilities.pia.modeller.fdr.FDRUtilities;
+import uk.ac.ebi.pride.utilities.pia.modeller.filter.protein.ProteinAccessionFilter;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
+import uk.ac.ebi.pride.utilities.pia.modeller.scores.psm.IntermediatePSMComparator;
 
 
 /**
@@ -23,7 +28,8 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
 public class PSMModeller {
 	
 	/** logger for this class */
-	private static final Logger logger = Logger.getLogger(PSMModeller.class);
+	private static final Logger logger =  LoggerFactory.getLogger(PSMModeller.class);
+	
 	
 	/** maps from the file (resp. controller) IDs to the corresponding PSMs */
 	private Map<Integer, List<IntermediatePeptideSpectrumMatch>> filePSMs;
@@ -34,13 +40,20 @@ public class PSMModeller {
 	/** mapping from the fileIDs to the score accessions used for FDR calculation */
 	private Map<Integer, String> fileFdrScoreAccessions;
 	
+	/** holds a filter to detect decoys. if no filter is given, the default decoy values are used for FDR calculation etc. */
+	private ProteinAccessionFilter decoyFilter;
+	
+	/** whether to look for unknown CVs in the online OBO */
+	private boolean oboLookup;
 	
 	
 	public PSMModeller(Integer nrFiles) {
-		filePSMs =
-				new HashMap<Integer, List<IntermediatePeptideSpectrumMatch>>(nrFiles + 1);
+		filePSMs = new HashMap<Integer, List<IntermediatePeptideSpectrumMatch>>(nrFiles + 1);
 		fileScoreAccessions = new HashMap<Integer, Set<String>>(nrFiles + 1);
 		fileFdrScoreAccessions = new HashMap<Integer, String>(nrFiles + 1);
+		decoyFilter = null;
+		
+		oboLookup = false;
 	}
 	
 	
@@ -58,15 +71,8 @@ public class PSMModeller {
 			fileScoreAccessions.put(fileID, new HashSet<String>(5));
 		}
 		
-		/*
-		TODO: 
-		hier muessen alle scores vom PSM auch zu fileScoreAccessions geadded werden fileScoreAccessions.get(fileID);
+		fileScoreAccessions.get(fileID).addAll(psm.getScoreAccessions());
 		
-		spectrumIdentification kann nicht für alle PSMs genommen werden... hat nur feste werte für scores!!!
-		-> eigene klasse mit alle werten erstellen und SpectrumIdentification nur für entsprechende controller nehmen
-		
-		psm.getSpectrumIdentification().getScore().getCvTermReferenceWithValues()
-		*/
 		return filePSMs.get(fileID).add(psm);
 	}
 	
@@ -103,20 +109,27 @@ public class PSMModeller {
 	 * @return
 	 */
 	public String getFdrScoreAccession(Integer fileID) {
-		// TODO: wenn noch keine gesetzt, setze die jetzt automatisch auf (erste main) score
+		if (fileFdrScoreAccessions.get(fileID) == null) {
+			// if no score for FDR calculation is set yet, set the first main score
+			fileFdrScoreAccessions.put(fileID, getFilesMainScoreAccession(fileID));
+		}
 		
 		return fileFdrScoreAccessions.get(fileID);
 	}
 	
 	
-	
+	/**
+	 * Returns the main score of the file given by its ID.
+	 * 
+	 * @param fileID
+	 * @return
+	 */
 	public String getFilesMainScoreAccession(Integer fileID) {
 		if (fileScoreAccessions.get(fileID) == null) {
 			return null;
 		}
 		
 		String accession = null;
-		
 		for (String scoreAcc : fileScoreAccessions.get(fileID)) {
 			CvScore cvScore = CvScore.getCvRefByAccession(scoreAcc);
 			if ((cvScore != null) && cvScore.getMainScore()) {
@@ -132,12 +145,47 @@ public class PSMModeller {
 	}
 	
 	
-	public void calculateAllFDR() {
-		
+	/**
+	 * Returns the List of PSMs for the given file
+	 * @param fileID
+	 * @return
+	 */
+	public List<IntermediatePeptideSpectrumMatch> getFilesPSMs(Integer fileID) {
+		return filePSMs.get(fileID);
 	}
 	
 	
+	/**
+	 * Sets the filter for decoy identification.
+	 */
+	public void setDecoyFilter(ProteinAccessionFilter decoyFilter) {
+		this.decoyFilter = decoyFilter;
+	}
+	
+	
+	/**
+	 * Calculates the FDR of the PSMs for the file selected by its ID
+	 */
 	public void calculateFDR(Integer fileID) {
+		List<IntermediatePeptideSpectrumMatch> psms = getFilesPSMs(fileID);
+		String fdrScoreAccession = getFdrScoreAccession(fileID);
 		
+		FDRUtilities.markDecoys(psms, decoyFilter);
+		
+		Collections.sort(psms, new IntermediatePSMComparator(fdrScoreAccession, oboLookup));
+		
+		FDRUtilities.calculateFDR(psms, fdrScoreAccession);
+		
+		FDRUtilities.calculateFDRScore(psms,  fdrScoreAccession, oboLookup);
+	}
+	
+	
+	/**
+	 * Calculates the FDR of the PSMs for all files
+	 */
+	public void calculateAllFDR() {
+		for (Integer fileID : filePSMs.keySet()) {
+			calculateFDR(fileID);
+		}
 	}
 }

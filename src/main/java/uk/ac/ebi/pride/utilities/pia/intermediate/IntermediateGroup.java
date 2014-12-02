@@ -59,7 +59,7 @@ public class IntermediateGroup {
 	
 	@Override
 	public int hashCode() {
-		int result = 0;
+		int result;
 		
 		result = ID.hashCode();
 		result = 31*result + treeID.hashCode();
@@ -315,7 +315,7 @@ public class IntermediateGroup {
 	
 	
 	/**
-	 * Getter for the dbSequences of this group and all the parents.
+	 * Getter for the intermediateProtein of this group and all the parents.
 	 * 
 	 * @return
 	 */
@@ -342,6 +342,10 @@ public class IntermediateGroup {
 	 * @return
 	 */
 	public boolean directlyConnectedToProtein(IntermediateProtein protein) {
-        return proteins != null && proteins.contains(protein);
+		if (proteins != null) {
+			return proteins.contains(protein);
+		} else {
+			return false;
+		}
 	}
 }

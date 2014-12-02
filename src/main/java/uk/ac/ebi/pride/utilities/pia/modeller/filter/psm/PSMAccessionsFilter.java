@@ -3,9 +3,8 @@ package uk.ac.ebi.pride.utilities.pia.modeller.filter.psm;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.ebi.pride.utilities.data.core.PeptideEvidence;
-import uk.ac.ebi.pride.utilities.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
+import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterType;
@@ -65,16 +64,14 @@ public class PSMAccessionsFilter extends AbstractFilter {
 	public Object getObjectsValue(Object o) {
 		if (o instanceof IntermediatePeptideSpectrumMatch) {
 			List<String> accessions = new ArrayList<String>();
-			SpectrumIdentification psm = ((IntermediatePeptideSpectrumMatch) o).getSpectrumIdentification();
-			for (PeptideEvidence pepEvidence : psm.getPeptideEvidenceList()) {
-				accessions.add(pepEvidence.getDbSequence().getAccession());
+			
+			if (((IntermediatePeptideSpectrumMatch) o).getPeptide() != null) {
+				for (IntermediateProtein protein
+						: ((IntermediatePeptideSpectrumMatch) o).getPeptide().getAllProteins()) {
+					accessions.add(protein.getAccession());
+				}
 			}
-			return accessions;
-		} else if (o instanceof SpectrumIdentification) {
-			List<String> accessions = new ArrayList<String>();
-			for (PeptideEvidence pepEvidence : ((SpectrumIdentification)o).getPeptideEvidenceList()) {
-				accessions.add(pepEvidence.getDbSequence().getAccession());
-			}
+			
 			return accessions;
 		} else {
 			return null;
@@ -83,8 +80,11 @@ public class PSMAccessionsFilter extends AbstractFilter {
 
 	@Override
 	public boolean supportsClass(Object c) {
-        return (c instanceof IntermediatePeptideSpectrumMatch) ||
-                (c instanceof SpectrumIdentification);
+		if (c instanceof IntermediatePeptideSpectrumMatch) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

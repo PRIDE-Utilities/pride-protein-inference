@@ -127,6 +127,16 @@ public class IntermediateStructure {
 	
 	
 	/**
+	 * Returns the total number of proteins
+	 * 
+	 * @return
+	 */
+	public int getNrProteins() {
+		return proteins.size();
+	}
+	
+	
+	/**
 	 * Returns all intermediate PSMs of the structure
 	 * @return
 	 */

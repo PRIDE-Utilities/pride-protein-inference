@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.utilities.pia.modeller.scores;
 
 /**
- * Enumeration of known CV terms, for faster access
+ * Enumeration of known CV terms for scores
  * 
  * @author julian
  *
@@ -70,6 +70,10 @@ public enum CvScore{
 	PSI_PSM_LEVEL_Q_VALUE("MS", "MS:1002354", "PSM-level q-value", false, false),
 	PSI_PSM_LEVEL_FDRSCORE("MS", "MS:1002355", "PSM-level FDRScore", false, false),
 	PSI_PSM_LEVEL_COMBINED_FDRSCORE("MS", "MS:1002356", "PSM-level combined FDRScore", false, false),
+	
+	
+	// PIA
+	PSI_PIA_PROTEIN_SCORE("MS", "MS:1002394", "PIA:protein score", true, true),
 	;
 	
 	

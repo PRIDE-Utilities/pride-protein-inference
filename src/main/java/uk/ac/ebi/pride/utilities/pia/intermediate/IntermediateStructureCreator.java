@@ -9,7 +9,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * This class creates the intermediate structure needed for fast data access
@@ -21,28 +23,28 @@ import org.apache.log4j.Logger;
 public class IntermediateStructureCreator {
 	
 	/** the logger for this class */
-	private static final Logger logger= Logger.getLogger(IntermediateStructureCreator.class);
+	private static final Logger logger = LoggerFactory.getLogger(IntermediateStructureCreator.class);
 	
 	/** mapping from the peptide ID to intermediatePeptide
 	 * TODO: we could decide in this class, whether a peptide is defined by the sequence only or also by the mods
 	 **/
 	private Map<Comparable, IntermediatePeptide> peptides;
 	
-	/** mapping from protein ID to the protein */
-	private Map<Comparable, IntermediateProtein> proteins;
+	/** mapping from protein accession to the protein */
+	private Map<String, IntermediateProtein> proteins;
 	
 	
 	
-	/** mapping from the protein IDs to connected peptides' IDs **/
-	private Map<Comparable, Set<Comparable>> proteinsToPeptidesMapping;
+	/** mapping from the protein accessions to connected peptides' IDs **/
+	private Map<String, Set<Comparable>> proteinsToPeptidesMapping;
 	
-	/** mapping from the peptide IDs to connected proteins' IDs */
-	private Map<Comparable, Set<Comparable>> peptidesToProteinsMapping;
+	/** mapping from the peptide IDs to connected proteins' accessions */
+	private Map<Comparable, Set<String>> peptidesToProteinsMapping;
 	
 	
 	
 	/** iterates over the clustered list of peptide -> proteins mapping */
-	private ListIterator<Map<Comparable, Set<Comparable>>> clusterIterator;
+	private ListIterator<Map<Comparable, Set<String>>> clusterIterator;
 	
 	
 	
@@ -56,10 +58,10 @@ public class IntermediateStructureCreator {
 	
 	public IntermediateStructureCreator(int threads) {
 		this.peptides = new HashMap<Comparable, IntermediatePeptide>();
-		this.proteins = new HashMap<Comparable, IntermediateProtein>();
+		this.proteins = new HashMap<String, IntermediateProtein>();
 		this.proteinsToPeptidesMapping =
-				new HashMap<Comparable, Set<Comparable>>();
-		this.peptidesToProteinsMapping = new HashMap<Comparable, Set<Comparable>>();
+				new HashMap<String, Set<Comparable>>();
+		this.peptidesToProteinsMapping = new HashMap<Comparable, Set<String>>();
 		
 		this.clusterIterator = null;
 		this.intermediateStructure = null;
@@ -102,12 +104,12 @@ public class IntermediateStructureCreator {
 	
 	/**
 	 * returns true, if the proteins map already contains a protein with the
-	 * given ID
+	 * given accessions
 	 * @param proteinID
 	 * @return
 	 */
-	public boolean proteinsContains(Comparable proteinID) {
-		return proteins.containsKey(proteinID);
+	public boolean proteinsContains(String accession) {
+		return proteins.containsKey(accession);
 	}
 	
 	
@@ -118,7 +120,23 @@ public class IntermediateStructureCreator {
 	 * @return any previous protein with the same ID or null
 	 */
 	public IntermediateProtein addProtein(IntermediateProtein protein) {
-		return proteins.put(protein.getID(), protein);
+		return proteins.put(protein.getAccession(), protein);
+	}
+	
+	
+	/**
+	 * potentially adds further information to a protein, coming from e.g. a new
+	 * file
+	 * 
+	 * @param proteinAccession the accession of the protein, which should get
+	 * new information
+	 * @param newProtein the protein, which may contain additional information
+	 * @return any previous protein with the same ID or null
+	 */
+	public void addProteinInformation(String proteinAccession, IntermediateProtein newProtein) {
+		// TODO: look if the newProtein contains additional information for the protein given by proteinAccession
+		
+		logger.warn("THIS IS NOT YET IMPLEMENTED!!! Don't use multiple files yet!");
 	}
 	
 	
@@ -141,18 +159,18 @@ public class IntermediateStructureCreator {
 	 * @param proteinID
 	 * @return
 	 */
-	public void addPeptideToProteinConnection(Comparable peptideID, Comparable proteinID) {
-		Set<Comparable> protIDs = peptidesToProteinsMapping.get(peptideID);
-		if (protIDs == null) {
-			protIDs = new HashSet<Comparable>();
-			peptidesToProteinsMapping.put(peptideID, protIDs);
+	public void addPeptideToProteinConnection(Comparable peptideID, String proteinAccession) {
+		Set<String> protAccessions = peptidesToProteinsMapping.get(peptideID);
+		if (protAccessions == null) {
+			protAccessions = new HashSet<String>();
+			peptidesToProteinsMapping.put(peptideID, protAccessions);
 		}
-		protIDs.add(proteinID);
+		protAccessions.add(proteinAccession);
 		
-		Set<Comparable> pepIDs = proteinsToPeptidesMapping.get(proteinID);
+		Set<Comparable> pepIDs = proteinsToPeptidesMapping.get(proteinAccession);
 		if (pepIDs == null) {
 			pepIDs = new HashSet<Comparable>();
-			proteinsToPeptidesMapping.put(proteinID, pepIDs);
+			proteinsToPeptidesMapping.put(proteinAccession, pepIDs);
 		}
 		pepIDs.add(peptideID);
 	}
@@ -200,7 +218,7 @@ public class IntermediateStructureCreator {
 				+ getNrProteins() + " protein accessions");
         
 		// first cluster the data
-		List<Map<Comparable, Set<Comparable>>> clusterList = buildClusterList();
+		List<Map<Comparable, Set<String>>> clusterList = buildClusterList();
 		
 		// initialize the iterator
 		clusterIterator = clusterList.listIterator();
@@ -238,25 +256,25 @@ public class IntermediateStructureCreator {
 	
 	
 	/**
-	 * Creates mappings from peptide IDs to protein IDs, which are
+	 * Creates mappings from peptide IDs to protein accessions, which are
 	 * disjoint.
 	 */
-	private List<Map<Comparable, Set<Comparable>>> buildClusterList() {
+	private List<Map<Comparable, Set<String>>> buildClusterList() {
 		
 		logger.info("start sorting clusters");
 		
 		// disjoint list of mappings from peptide IDs to protein IDs
-		List<Map<Comparable, Set<Comparable>>> clusteredPepEntriesMap =
-				new ArrayList<Map<Comparable,Set<Comparable>>>();
+		List<Map<Comparable, Set<String>>> clusteredPepEntriesMap =
+				new ArrayList<Map<Comparable,Set<String>>>();
 		
 		Set<Comparable> peptidesDone = new HashSet<Comparable>(peptides.size());
-		Set<Comparable> proteinsDone = new HashSet<Comparable>(proteins.size());
+		Set<String> proteinsDone = new HashSet<String>(proteins.size());
 		
-		for (Map.Entry<Comparable, Set<Comparable>> entryToPepsIt : proteinsToPeptidesMapping.entrySet()) {
+		for (Map.Entry<String, Set<Comparable>> entryToPepsIt : proteinsToPeptidesMapping.entrySet()) {
 			if (!proteinsDone.contains(entryToPepsIt.getKey())) {
 				// this accession is not yet clustered, so start a new cluster
 				// and insert all the "connected" peptides and accessions
-				Map<Comparable, Set<Comparable>> pepEntriesMapCluster =
+				Map<Comparable, Set<String>> pepEntriesMapCluster =
 						createCluster(entryToPepsIt.getKey(), peptidesDone, proteinsDone);
 				
 				if (pepEntriesMapCluster != null) {
@@ -285,17 +303,17 @@ public class IntermediateStructureCreator {
 	 * This method should only be called by
 	 * {@link IntermediateStructureCreator#buildClusterList()}
 	 */
-	private Map<Comparable, Set<Comparable>> createCluster(Comparable proteinID,
-			Set<Comparable> peptidesDone, Set<Comparable> proteinsDone) {
+	private Map<Comparable, Set<String>> createCluster(String proteinAccession,
+			Set<Comparable> peptidesDone, Set<String> proteinsDone) {
 		
-		Set<Comparable> clusterProteins = new HashSet<Comparable>();
+		Set<String> clusterProteins = new HashSet<String>();
 		Set<Comparable> clusterPeptides = new HashSet<Comparable>();
 		
 		boolean newProteins = true; // the given dbSequence is new 
 		boolean newPeptides = false;
 		
 		// initialize the cluster's peptides with the peptides of the given dbSequence
-		for (Comparable pepID : proteinsToPeptidesMapping.get(proteinID)) {
+		for (Comparable pepID : proteinsToPeptidesMapping.get(proteinAccession)) {
 			newPeptides |= clusterPeptides.add(pepID);
 		}
 		
@@ -308,7 +326,7 @@ public class IntermediateStructureCreator {
 			// get proteins for peptides, which are new since the last loop
 			for (Comparable newPeptideID : clusterPeptides) {
 				if (!peptidesDone.contains(newPeptideID)) {
-					for (Comparable newProteinID : peptidesToProteinsMapping.get(newPeptideID)) {
+					for (String newProteinID : peptidesToProteinsMapping.get(newPeptideID)) {
 						newProteins |= clusterProteins.add(newProteinID);
 					}
 					peptidesDone.add(newPeptideID);
@@ -316,20 +334,20 @@ public class IntermediateStructureCreator {
 			}
 			
 			// get peptides for proteins, which are new since the last loop
-			for (Comparable newProteinID : clusterProteins) {
-				if (!proteinsDone.contains(newProteinID)) {
-					for (Comparable newPeptideID : proteinsToPeptidesMapping.get(newProteinID)) {
+			for (String newProteinAccession : clusterProteins) {
+				if (!proteinsDone.contains(newProteinAccession)) {
+					for (Comparable newPeptideID : proteinsToPeptidesMapping.get(newProteinAccession)) {
 						newPeptides |= clusterPeptides.add(newPeptideID);
 					}
-					proteinsDone.add(newProteinID);
+					proteinsDone.add(newProteinAccession);
 				}
 			}
 		}
 		clusterProteins = null;
 		
 		// now we have the whole cluster, so put it into the pepAccMapCluster
-		Map<Comparable, Set<Comparable>> peptidesToProteinsMapCluster =
-				new HashMap<Comparable, Set<Comparable>>(clusterPeptides.size());
+		Map<Comparable, Set<String>> peptidesToProteinsMapCluster =
+				new HashMap<Comparable, Set<String>>(clusterPeptides.size());
 		
 		for (Comparable peptideID : clusterPeptides) {
 			peptidesToProteinsMapCluster.put(peptideID, peptidesToProteinsMapping.get(peptideID));
@@ -341,11 +359,11 @@ public class IntermediateStructureCreator {
 	
 	/**
 	 * Returns the next cluster in the clustered mapping of peptides to
-	 * DBSequences.
+	 * proteins.
 	 * 
 	 * @return
 	 */
-	protected synchronized Map<Comparable, Set<Comparable>> getNextCluster() {
+	protected synchronized Map<Comparable, Set<String>> getNextCluster() {
 		synchronized (clusterIterator) {
 			if (clusterIterator != null) {
 				if (clusterIterator.hasNext()) {

@@ -69,7 +69,11 @@ public class PeptideNrPSMsFilter extends AbstractFilter {
 
 	@Override
 	public boolean supportsClass(Object c) {
-        return c instanceof IntermediatePeptide;
+		if (c instanceof IntermediatePeptide) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
