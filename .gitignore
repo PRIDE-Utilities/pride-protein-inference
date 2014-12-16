@@ -1,0 +1,17 @@
+/target
+
+# Intellij generated files #
+#####################
+*.iml
+
+# Directory to ignore #
+#####################
+log/
+target/
+.idea/
+
+# Eclipse generated files #
+###########################
+/.settings
+.classpath
+.project
