@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoreUtilities;
 
 
+
 /**
  * Compares the scores of {@link IntermediatePeptide}s. These have to be
  * calculated beforehand.

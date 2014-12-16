@@ -7,6 +7,7 @@ import java.util.Map;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoreUtilities;
 
+
 /**
  * Compares the scores of {@link IntermediatePeptideSpectrumMatch}es
  * 

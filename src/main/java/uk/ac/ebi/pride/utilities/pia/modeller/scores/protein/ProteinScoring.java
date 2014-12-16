@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.utilities.pia.modeller.scores.protein;
 import uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.InferenceProteinGroup;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.peptide.PeptideScoring;
 
+
 public abstract class ProteinScoring {
 	
 	/** use a spectrum only once for protein scoring */

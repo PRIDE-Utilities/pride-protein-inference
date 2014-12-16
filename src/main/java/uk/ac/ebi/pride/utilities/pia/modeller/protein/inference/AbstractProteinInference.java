@@ -71,7 +71,7 @@ public abstract class AbstractProteinInference {
      */
 	public AbstractProteinInference(IntermediateStructure intermediateStructure,
 			PeptideScoring peptideScoring, ProteinScoring proteinScoring,
-			List<AbstractFilter> filters, int nrThreads) {
+			List<AbstractFilter> filters, Integer nrThreads) {
 		this.intermediateStructure = intermediateStructure;
 		this.filters = (filters == null) ? new ArrayList<AbstractFilter>() : filters;
 		this.peptideScoring = peptideScoring;

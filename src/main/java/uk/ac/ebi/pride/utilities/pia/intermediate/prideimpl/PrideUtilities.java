@@ -3,9 +3,9 @@ package uk.ac.ebi.pride.utilities.pia.intermediate.prideimpl;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.ac.ebi.pride.utilities.pia.psisupport.CVUtilities;
 import uk.ac.ebi.jmzidml.model.mzidml.CvParam;
 import uk.ac.ebi.jmzidml.model.mzidml.UserParam;
+import uk.ac.ebi.pride.utilities.pia.psisupport.CVUtilities;
 
 
 /**

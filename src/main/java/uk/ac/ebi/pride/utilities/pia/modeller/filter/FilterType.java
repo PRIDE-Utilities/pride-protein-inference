@@ -32,9 +32,9 @@ public enum FilterType {
 			arguments.add(FilterComparator.greater);
 			
 			return arguments;
-		}
-
-    },
+		};
+		
+	},
 	/**
 	 * the literal filter type compares strings for filtering
 	 */

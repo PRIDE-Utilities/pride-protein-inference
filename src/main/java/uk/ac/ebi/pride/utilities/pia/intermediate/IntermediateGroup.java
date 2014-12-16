@@ -59,7 +59,7 @@ public class IntermediateGroup {
 	
 	@Override
 	public int hashCode() {
-		int result;
+		int result = 0;
 		
 		result = ID.hashCode();
 		result = 31*result + treeID.hashCode();

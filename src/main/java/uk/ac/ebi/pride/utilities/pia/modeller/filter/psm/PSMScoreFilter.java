@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoreUtilities;
 
 
+
 /**
  * Filters for a score on PSM level.
  * 

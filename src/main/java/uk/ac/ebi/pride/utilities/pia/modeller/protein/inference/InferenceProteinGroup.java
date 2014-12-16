@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoringItemType;
 
 
+
 /**
  * This group bundles the information about an inferred protein group.
  * 

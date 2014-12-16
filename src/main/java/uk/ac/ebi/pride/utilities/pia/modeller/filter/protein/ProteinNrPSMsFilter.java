@@ -6,6 +6,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterType;
 import uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.InferenceProteinGroup;
 
+
 /**
  * Filters for the number of PSMs on protein level.
  * <p>

@@ -4,6 +4,7 @@ import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoreUtilities;
 
+
 public abstract class PeptideScoring {
 	
 	/** accession of the base score */

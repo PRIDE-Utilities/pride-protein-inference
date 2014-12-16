@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.InferenceProtein
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoringItemType;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.peptide.PeptideScoring;
 
+
 /**
  * Calculates the score of the protein by multiplying up the scores of peptides
  * and returning the -log10 of the score (log for numeric reasons, minus to

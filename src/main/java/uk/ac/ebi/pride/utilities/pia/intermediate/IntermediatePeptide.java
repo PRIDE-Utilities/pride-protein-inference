@@ -12,6 +12,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterUtilities;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoringItemType;
 
 
+
 /**
  * A peptide class, which is used in the intermediate structure.
  * 

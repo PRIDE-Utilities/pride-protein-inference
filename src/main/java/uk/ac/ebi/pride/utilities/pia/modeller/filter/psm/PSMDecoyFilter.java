@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterType;
 
+
 /**
  * Filter for decoys on PSM level.
  * 

@@ -5,6 +5,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterComparator;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.FilterType;
 
+
 /**
  * Filters for the number of PSMs on peptide level.
  * <p>
@@ -69,7 +70,11 @@ public class PeptideNrPSMsFilter extends AbstractFilter {
 
 	@Override
 	public boolean supportsClass(Object c) {
-        return c instanceof IntermediatePeptide;
+		if (c instanceof IntermediatePeptide) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

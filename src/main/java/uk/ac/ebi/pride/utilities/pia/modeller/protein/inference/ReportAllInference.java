@@ -20,6 +20,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.peptide.PeptideScoring;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.protein.ProteinScoring;
 
 
+
 /**
  * This inference reports all the PIA {@link IntermediateGroup}s as one protein.
  * <p>
@@ -46,7 +47,7 @@ public class ReportAllInference extends AbstractProteinInference {
 	
 	public ReportAllInference(IntermediateStructure intermediateStructure,
 			PeptideScoring peptideScoring, ProteinScoring proteinScoring,
-			List<AbstractFilter> filters, int nrThreads) {
+			List<AbstractFilter> filters, Integer nrThreads) {
 		super(intermediateStructure, peptideScoring, proteinScoring, filters, nrThreads);
 		this.progress = 0.0;
 	}

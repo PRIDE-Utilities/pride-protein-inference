@@ -16,6 +16,7 @@ import uk.ac.ebi.pride.utilities.pia.modeller.scores.protein.ProteinScoring;
 
 
 
+
 /**
  * This inference filter reports all the PIA {@link IntermediateGroup}s as protein,
  * which together fulfill the Occam's Razor constraints. I.e. the minimal set of
@@ -61,7 +62,7 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	
 	public OccamsRazorInference(IntermediateStructure intermediateStructure,
 			PeptideScoring peptideScoring, ProteinScoring proteinScoring,
-			List<AbstractFilter> filters, int nrThreads) {
+			List<AbstractFilter> filters, Integer nrThreads) {
 		super(intermediateStructure, peptideScoring, proteinScoring, filters, nrThreads);
 		
 		this.progress = 0.0;
@@ -141,19 +142,8 @@ public class OccamsRazorInference extends AbstractProteinInference {
 	@Override
 	public List<InferenceProteinGroup> calculateInference( boolean considerModifications) {
 		
-		/* public List<ReportProtein> calculateInference(Map<Long, IntermediateGroup> groupMap,
-			Map<String, ReportPSMSet> reportPSMSetMap,
-			boolean considerModifications,
-			Map<String, Boolean> psmSetSettings)*/
-		
 		progress = 0.0;
 		logger.info(name + " calculateInference started...");
-		/*
-		logger.info("scoring: " + getScoring().getName() + " with " + 
-				getScoring().getScoreSetting().getValue() + ", " +
-				getScoring().getPSMForScoringSetting().getValue() +
-				"\n\tpsmSetSettings: " + psmSetSettings);
-		*/
 		
 		// initialize the cluster iterator
 		clustersIterator = intermediateStructure.getClusters().values().iterator();

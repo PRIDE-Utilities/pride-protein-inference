@@ -8,6 +8,7 @@ import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMat
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.ScoringItemType;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.psm.IntermediatePSMComparator;
 
+
 /**
  * This class uses the PSM with the best score for scoring of a peptide.
  * 
