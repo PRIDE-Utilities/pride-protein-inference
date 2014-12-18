@@ -1,13 +1,12 @@
 package uk.ac.ebi.pride.utilities.pia.intermediate.prideimpl;
 
 import uk.ac.ebi.pride.utilities.data.controller.DataAccessController;
+import uk.ac.ebi.pride.utilities.data.core.Protein;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
 
 
 /**
  * An intermediate class, which represents a protein
- * 
- * TODO: implement correct workflow for PRIDE!
  * 
  * @author julian
  *
@@ -44,5 +43,23 @@ public class PrideIntermediateProtein extends IntermediateProtein {
 	@Override
 	public String getProteinSequence() {
 		return controller.getProteinSequence(proteinID).getSequence();
+	}
+	
+	
+	/**
+	 * Getter for the PRIDE protein ID
+	 * @return
+	 */
+	public Comparable getPrideProteinID() {
+		return proteinID;
+	}
+	
+	
+	/**
+	 * Getter for the complete PRIDE protein
+	 * @return
+	 */
+	public Protein getPrideProtein() {
+		return controller.getProteinById(proteinID);
 	}
 }
