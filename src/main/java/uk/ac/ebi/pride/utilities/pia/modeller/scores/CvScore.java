@@ -81,14 +81,14 @@ public enum CvScore{
 	private final String accession;
 	private final String name;
 	private final boolean higherScoreBetter;
-	private final boolean mainScore;
+	private final boolean isMainScore;
 	
 	private CvScore(String cvLabel, String accession, String name, boolean higherScoreBetter, boolean mainScore) {
 		this.cvLabel = cvLabel;
 		this.accession = accession;
 		this.name = name;
 		this.higherScoreBetter = higherScoreBetter;
-		this.mainScore = mainScore;
+		this.isMainScore = mainScore;
 	}
 	
 	
@@ -112,8 +112,8 @@ public enum CvScore{
 	}
 	
 	
-	public boolean getMainScore() {
-		return mainScore;
+	public boolean getIsMainScore() {
+		return isMainScore;
 	}
 	
 	

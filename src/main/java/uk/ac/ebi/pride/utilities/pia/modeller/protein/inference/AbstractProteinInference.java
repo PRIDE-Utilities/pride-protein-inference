@@ -278,7 +278,7 @@ public abstract class AbstractProteinInference {
 	 * @return
 	 */
 	public String createProteinAmbiguityGroupID(IntermediateGroup group) {
-		return "PAG_" + group;
+		return "PAG_" + group.getID();
 	}
 	
 	

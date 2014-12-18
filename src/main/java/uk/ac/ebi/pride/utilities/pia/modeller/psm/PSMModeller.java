@@ -130,7 +130,7 @@ public class PSMModeller {
 		String accession = null;
 		for (String scoreAcc : getFilesScoreAccessions(fileID)) {
 			CvScore cvScore = CvScore.getCvRefByAccession(scoreAcc);
-			if ((cvScore != null) && cvScore.getMainScore()) {
+			if ((cvScore != null) && cvScore.getIsMainScore()) {
 				return cvScore.getAccession();
 			}
 			

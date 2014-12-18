@@ -2,7 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.ac.ebi.pride.utilities</groupId>
   <artifactId>pride-protein-inference</artifactId>
+<<<<<<< HEAD
   <version>0.0.2-SNAPSHOT</version>
+=======
+  <version>0.0.3-SNAPSHOT</version>
+>>>>>>> 36bfe893ab7b4f22d3acdb9c419faf08fa915c9e
   <name>PIA core library</name>
   <description>The PIA - Protein Inference Algorithms core library</description>
 
