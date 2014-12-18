@@ -7,7 +7,7 @@ The primary purpose of pride-protein-inference library is to provide different a
 
 # License
 
-pride-protein-inference is a PRIDE API licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
+pride-protein-inference is a fork of the [pia-core-library](https://github.com/mpc-bioinformatics/pia-core-library), which is licensed under a three-clause BSD license. The pride-protein-inference is mainly developed by the same PIA-team. 
 
 # How to cite it:
 
