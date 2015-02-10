@@ -133,7 +133,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 		List<String> scoreAccessions = new ArrayList<String>();
 		
 		for (CvTermReference cvTerm
-				: controller.getPeptideScore(proteinID, peptideID).getCvTermReferenceWithValues()) {
+				: getSpectrumIdentification().getScore().getCvTermReferenceWithValues()) {
 			scoreAccessions.add(cvTerm.getAccession());
 		}
 		
@@ -183,7 +183,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 	
 	@Override
 	public String getSequence() {
-		return controller.getPeptideByIndex(proteinID, peptideID).getSequence();
+		return getSpectrumIdentification().getSequence();
 	}
 	
 	
@@ -192,7 +192,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 		List<Modification> modifications = new ArrayList<Modification>();
 		
 		for (uk.ac.ebi.pride.utilities.data.core.Modification prideMod
-				: controller.getPeptideByIndex(proteinID, peptideID).getModifications()) {
+				: getSpectrumIdentification().getModifications()) {
 			Modification mod = new Modification();
 			
 			Double massDelta = null;
