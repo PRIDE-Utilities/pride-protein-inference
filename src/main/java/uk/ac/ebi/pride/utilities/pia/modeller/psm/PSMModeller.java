@@ -157,9 +157,7 @@ public class PSMModeller {
 		}
 		
 		if (fileScoreAccessions.get(fileID) == null) {
-			// the score accessions are not yet indexed, do this no
-			logger.info("getting the scores for file " + fileID);
-			
+			// the score accessions are not yet indexed, do this now
 			Set<String> accessions = new HashSet<String>();
 			for (IntermediatePeptideSpectrumMatch psm : filePSMs.get(fileID)) {
 				accessions.addAll(psm.getScoreAccessions());

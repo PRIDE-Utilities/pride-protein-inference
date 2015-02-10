@@ -40,7 +40,8 @@ public class PeptideScoringUseBestPSM extends PeptideScoring {
 			
 			if (bestScore.equals(Double.NaN) ||
 					(psmComparator.compareValues(score, bestScore) <= 0)) {
-				if (!bestScore.equals(score)) {
+				// the score may be null, if for some reason the PSM score could not be found
+				if ((score != null) && (!bestScore.equals(score))) {
 					bestScore = score;
 					scoringPSM.clear();
 				}
