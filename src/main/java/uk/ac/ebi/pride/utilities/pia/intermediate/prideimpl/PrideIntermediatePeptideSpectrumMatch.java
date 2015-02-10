@@ -183,7 +183,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 	
 	@Override
 	public String getSequence() {
-		return getSpectrumIdentification().getSequence();
+		return controller.getPeptideByIndex(proteinID, peptideID).getSequence();
 	}
 	
 	
@@ -192,7 +192,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 		List<Modification> modifications = new ArrayList<Modification>();
 		
 		for (uk.ac.ebi.pride.utilities.data.core.Modification prideMod
-				: getSpectrumIdentification().getModifications()) {
+				: controller.getPeptideByIndex(proteinID, peptideID).getModifications()) {
 			Modification mod = new Modification();
 			
 			Double massDelta = null;
