@@ -133,7 +133,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 		List<String> scoreAccessions = new ArrayList<String>();
 		
 		for (CvTermReference cvTerm
-				: controller.getPeptideScore(proteinID, peptideID).getCvTermReferenceWithValues()) {
+				: getSpectrumIdentification().getScore().getCvTermReferenceWithValues()) {
 			scoreAccessions.add(cvTerm.getAccession());
 		}
 		
