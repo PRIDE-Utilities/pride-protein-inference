@@ -9,7 +9,7 @@ import uk.ac.ebi.pride.utilities.data.controller.DataAccessController;
 import uk.ac.ebi.pride.utilities.data.core.SpectrumIdentification;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptideSpectrumMatch;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
-import uk.ac.ebi.pride.utilities.term.CvTermReference;
+import uk.ac.ebi.pride.utilities.term.SearchEngineScoreCvTermReference;
 
 
 /**
@@ -113,7 +113,7 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 		} else if (CvScore.PSI_PSM_LEVEL_Q_VALUE.getAccession().equals(scoreAccession)) {
 			return getQValue();
 		} else {
-			CvTermReference cvTermRef = CvTermReference.getCvRefByAccession(scoreAccession);
+            SearchEngineScoreCvTermReference cvTermRef = SearchEngineScoreCvTermReference.getSearchEngineScoreParamByAccession(scoreAccession);
 			if (cvTermRef != null) {
 				List<Number> scores = 
 						getSpectrumIdentification().getScore().getScores(cvTermRef);
@@ -132,8 +132,8 @@ public class PrideIntermediatePeptideSpectrumMatch extends IntermediatePeptideSp
 	public List<String> getBaseScoreAccessions() {
 		List<String> scoreAccessions = new ArrayList<String>();
 		
-		for (CvTermReference cvTerm
-				: getSpectrumIdentification().getScore().getCvTermReferenceWithValues()) {
+		for (SearchEngineScoreCvTermReference cvTerm
+				: getSpectrumIdentification().getScore().getSearchEngineScoreCvTermReferenceWithValues()) {
 			scoreAccessions.add(cvTerm.getAccession());
 		}
 		
