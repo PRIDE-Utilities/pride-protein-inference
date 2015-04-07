@@ -3,7 +3,12 @@ package uk.ac.ebi.pride.utilities.pia.modeller;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.ebi.pride.jmztab.model.MZTabFile;
+import uk.ac.ebi.pride.jmztab.utils.MZTabFileConverter;
 import uk.ac.ebi.pride.utilities.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
+import uk.ac.ebi.pride.utilities.data.exporters.AbstractMzTabConverter;
+import uk.ac.ebi.pride.utilities.data.exporters.HQMzIdentMLMzTabConverter;
+import uk.ac.ebi.pride.utilities.data.exporters.MzIdentMLMzTabConverter;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.utilities.pia.intermediate.prideimpl.PrideIntermediateProtein;
 import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
@@ -46,7 +51,19 @@ public class PIAModellerTest {
 
     @Test
     public void runPIAModeller() throws  Exception{
+        runDefaultProteinInference();
+    }
 
+    @Test
+    public void runProteinInferenceToMzTab(){
+
+        AbstractMzTabConverter mzTabconverter = new HQMzIdentMLMzTabConverter(controller);
+        MZTabFile mzTabFile = mzTabconverter.getMZTabFile();
+        MZTabFileConverter checker = new MZTabFileConverter();
+        checker.check(mzTabFile);
+    }
+
+    private void runDefaultProteinInference(){
         PIAModeller piaModeller = new PIAModeller();
 
         CvScore cvScore = null;
@@ -107,7 +124,7 @@ public class PIAModellerTest {
 
                 for (IntermediateProtein protein : proteinSet) {
                     Comparable proteinID = ((PrideIntermediateProtein)protein).getPrideProteinID();
-                    // null as the peptide list is interpreted as taking all peptides (PSMs)
+                    // null as txhe peptide list is interpreted as taking all peptides (PSMs)
                     proteinPeptideMap.put(proteinID, null);
                 }
             } else {
@@ -117,6 +134,5 @@ public class PIAModellerTest {
             prideProteinGroupMapping.put(piaGroup.getID(), proteinPeptideMap);
         }
         controller.setInferredProteinGroups(prideProteinGroupMapping);
-
     }
 }
