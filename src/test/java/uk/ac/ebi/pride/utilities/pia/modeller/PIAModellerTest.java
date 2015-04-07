@@ -97,40 +97,30 @@ public class PIAModellerTest {
             protScoring = new ProteinScoringAdditive(false, pepScoring);
         }
 
-        // TODO: allow for filters
-        List<AbstractFilter> filters = null;
-
         // perform the protein inferences
-        piaModeller.getProteinModeller().infereProteins(pepScoring, protScoring, OccamsRazorInference.class, filters, false);
+        piaModeller.getProteinModeller().infereProteins(pepScoring, protScoring, OccamsRazorInference.class, null, false);
 
         // create the protein groups
         int nrGroups = piaModeller.getProteinModeller().getInferredProteins().size();
         Map<Comparable, Map<Comparable, List<Comparable>>> prideProteinGroupMapping = new HashMap<Comparable, Map<Comparable,List<Comparable>>>(nrGroups);
 
-        int count = 0;
         for (InferenceProteinGroup piaGroup : piaModeller.getProteinModeller().getInferredProteins()) {
 
             Map<Comparable, List<Comparable>> proteinPeptideMap = null;
 
-            if ((filters == null) || (filters.size() < 1)) {
+            Set<IntermediateProtein> proteinSet = new HashSet<IntermediateProtein>(piaGroup.getProteins());
 
-                Set<IntermediateProtein> proteinSet = new HashSet<IntermediateProtein>(piaGroup.getProteins());
-                // include the subGroups
-                for (InferenceProteinGroup subGroup : piaGroup.getSubGroups()) {
-                    proteinSet.addAll(subGroup.getProteins());
-                }
-
-                proteinPeptideMap = new HashMap<Comparable, List<Comparable>>(proteinSet.size());
-
-                for (IntermediateProtein protein : proteinSet) {
-                    Comparable proteinID = ((PrideIntermediateProtein)protein).getPrideProteinID();
-                    // null as txhe peptide list is interpreted as taking all peptides (PSMs)
-                    proteinPeptideMap.put(proteinID, null);
-                }
-            } else {
-
+            // include the subGroups
+            for (InferenceProteinGroup subGroup : piaGroup.getSubGroups()) {
+                proteinSet.addAll(subGroup.getProteins());
             }
 
+            proteinPeptideMap = new HashMap<Comparable, List<Comparable>>(proteinSet.size());
+
+            for (IntermediateProtein protein : proteinSet) {
+                Comparable proteinID = ((PrideIntermediateProtein)protein).getPrideProteinID();
+                proteinPeptideMap.put(proteinID, null);
+            }
             prideProteinGroupMapping.put(piaGroup.getID(), proteinPeptideMap);
         }
         controller.setInferredProteinGroups(prideProteinGroupMapping);
