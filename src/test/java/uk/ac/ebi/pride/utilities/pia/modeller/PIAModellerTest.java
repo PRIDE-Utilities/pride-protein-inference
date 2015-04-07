@@ -34,7 +34,7 @@ public class PIAModellerTest {
 
     @Before
     public void setUp() throws Exception {
-        URL url = PIAModellerTest.class.getClassLoader().getResource("spectraST.mzid");
+        URL url = PIAModellerTest.class.getClassLoader().getResource("55merge_tandem.mzid");
 
         if (url == null) {
             throw new IllegalStateException("no file for input found!");
@@ -56,7 +56,7 @@ public class PIAModellerTest {
 
     @Test
     public void runProteinInferenceToMzTab(){
-
+        runDefaultProteinInference();
         AbstractMzTabConverter mzTabconverter = new HQMzIdentMLMzTabConverter(controller);
         MZTabFile mzTabFile = mzTabconverter.getMZTabFile();
         MZTabFileConverter checker = new MZTabFileConverter();
