@@ -183,4 +183,3 @@ importController.close();
 
 
 Tip: In the next future we will provide more example that you might find them useful. 
->>>>>>> 36bfe893ab7b4f22d3acdb9c419faf08fa915c9e
