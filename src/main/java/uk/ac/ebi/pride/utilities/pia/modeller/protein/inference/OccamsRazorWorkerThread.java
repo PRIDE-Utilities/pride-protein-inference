@@ -274,18 +274,24 @@ public class OccamsRazorWorkerThread extends Thread {
 				}
 			}
 			
-			for (InferenceProteinGroup protein : groupsWithMostPeptides) {
-				reportProteins.add(protein);
-				reportedPeptides.addAll(proteinIDsToPeptideIDs.get(protein.getID()));
-				
-				unreportedProteins.remove(protein.getID());
-				
-				// add the subproteins
-				for (InferenceProteinGroup subProtein : proteinIDsToSubproteins.get(protein.getID())) {
-					protein.addSubgroup(subProtein);
-					unreportedProteins.remove(subProtein.getID());
-				}
-			}
+			if(groupsWithMostPeptides != null){
+                Iterator<InferenceProteinGroup> itProtein = groupsWithMostPeptides.iterator();
+                while (itProtein.hasNext()) {
+                    InferenceProteinGroup protein = itProtein.next();
+                    reportProteins.add(protein);
+                    reportedPeptides.addAll(proteinIDsToPeptideIDs.get(protein.getID()));
+
+                    unreportedProteins.remove(protein.getID());
+
+                    // add the subproteins
+                    for (InferenceProteinGroup subProtein : proteinIDsToSubproteins.get(protein.getID())) {
+                        protein.addSubgroup(subProtein);
+                        unreportedProteins.remove(subProtein.getID());
+                    }
+                }
+
+            }
+
 		}
 		
 		if (reportProteins.size() > 0) {

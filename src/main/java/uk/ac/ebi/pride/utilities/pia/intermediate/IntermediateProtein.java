@@ -138,14 +138,13 @@ public abstract class IntermediateProtein implements FDRComputableByDecoys {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
+        if (this == obj) return true;
         if (obj == null || !(obj instanceof IntermediateProtein)) return false;
-		
-        IntermediateProtein protein = (IntermediateProtein)obj;
-        
-        if (!getAccession().equals(protein.getAccession())) return false;
-		return !((group != null) ? !group.getID().equals(protein.getGroup().getID()) : (protein.getGroup() != null)); // cannot compare group (as it would be recursive), instead compare group's ID
-	}
+
+        IntermediateProtein protein = (IntermediateProtein) obj;
+
+        return getAccession().equals(protein.getAccession()) && !((group != null) ? !group.getID().equals(protein.getGroup().getID()) : (protein.getGroup() != null));
+    }
 	
 	
 	@Override

@@ -213,7 +213,7 @@ public abstract class IntermediatePeptideSpectrumMatch implements FDRComputableB
 			if (peptide != null) {
 				for (IntermediateProtein protein : peptide.getAllProteins()) {
 					if (protein.getIsDecoy() != null) {
-						decoy &= protein.getIsDecoy();
+						decoy = protein.getIsDecoy();
 					} else {
 						// an un-flagged protein indicates a target
 						decoy = false;
@@ -301,20 +301,16 @@ public abstract class IntermediatePeptideSpectrumMatch implements FDRComputableB
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || !(obj instanceof IntermediatePeptideSpectrumMatch)) return false;
-		
-		IntermediatePeptideSpectrumMatch psm = (IntermediatePeptideSpectrumMatch)obj;
-		if (!getID().equals(psm.getID())) return false;
-		return getControllerID().equals(psm.getControllerID());
-	}
+        if (this == obj) return true;
+        if (obj == null || !(obj instanceof IntermediatePeptideSpectrumMatch)) return false;
+
+        IntermediatePeptideSpectrumMatch psm = (IntermediatePeptideSpectrumMatch) obj;
+        return getID().equals(psm.getID()) && getControllerID().equals(psm.getControllerID());
+    }
 	
 	
 	@Override
 	public int hashCode() {
-		int result = getID().hashCode();
-		result = 31 * getControllerID().hashCode();
-		
-		return result;
+		return 31 * getControllerID().hashCode();
 	}
 }

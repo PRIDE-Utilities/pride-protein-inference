@@ -152,7 +152,7 @@ public abstract class AbstractProteinInference {
 					for (IntermediatePeptideSpectrumMatch psm : pep.getAllPeptideSpectrumMatches()) {
 						if (FilterUtilities.satisfiesFilterList(psm, filters)) {
 							// all filters on PSM level are satisfied -> use this PSM
-							Comparable pepID = getPSMKey(psm, considerModifications);
+							Comparable pepID = getPSMKey(psm, true);
 							
 							// get the peptide of this PSM
 							IntermediatePeptide psmsPeptide = groupsPepsMap.get(pepID);
@@ -235,7 +235,7 @@ public abstract class AbstractProteinInference {
 	static public final Comparable getPeptideKey(IntermediatePeptide peptide, boolean considerModifications) {
 		if (considerModifications) {
 			// return one of the PSMs' keys
-			return getPSMKey(peptide.getAllPeptideSpectrumMatches().get(0), considerModifications);
+			return getPSMKey(peptide.getAllPeptideSpectrumMatches().get(0), true);
 		} else {
 			// just return the sequence
 			return peptide.getSequence();

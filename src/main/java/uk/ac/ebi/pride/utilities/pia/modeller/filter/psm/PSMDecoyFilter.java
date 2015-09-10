@@ -74,11 +74,7 @@ public class PSMDecoyFilter extends AbstractFilter {
 	
 	@Override
 	public boolean supportsClass(Object c) {
-		if ((c instanceof IntermediatePeptideSpectrumMatch)) {
-			return true;
-		} else {
-			return false;
-		}
+        return (c instanceof IntermediatePeptideSpectrumMatch);
 	}
 
 }

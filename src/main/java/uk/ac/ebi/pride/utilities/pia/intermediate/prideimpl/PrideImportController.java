@@ -97,13 +97,11 @@ public class PrideImportController implements DataImportController {
 				this.controller = new MzIdentMLControllerImpl(inputFile, false, true);
 				break;
 		}
-		
-		if (this.controller != null) {
-			openedController = true;
-			inputFileName = inputFile.getAbsolutePath();
-			this.intermediateStructCreator = structCreator;
-		}
-	}
+
+        openedController = true;
+        inputFileName = inputFile.getAbsolutePath();
+        this.intermediateStructCreator = structCreator;
+    }
 	
 	
 	@Override

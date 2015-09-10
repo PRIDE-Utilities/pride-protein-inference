@@ -7,7 +7,6 @@ import java.util.Set;
 
 import uk.ac.ebi.jmzidml.model.mzidml.CvParam;
 import uk.ac.ebi.jmzidml.model.mzidml.UserParam;
-import uk.ac.ebi.pride.utilities.data.controller.DataAccessController;
 import uk.ac.ebi.pride.utilities.data.core.Protein;
 import uk.ac.ebi.pride.utilities.data.core.ProteinGroup;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
@@ -119,8 +118,8 @@ public class PrideUtilities {
 			}
 		}
 		
-		ProteinGroup group = new ProteinGroup(piaGroup.getID(), piaGroup.getID(), proteinList);
-		return group;
+		return new ProteinGroup(piaGroup.getID(), piaGroup.getID(), proteinList);
+
 	}
 	
 	
@@ -137,15 +136,16 @@ public class PrideUtilities {
 		if (completePrideProtein) {
 			// return the complete PRIDE protein (used when no filters were used in inference)
 			protein = intermediateProtein.getPrideProtein();
-		} else {
-			// create the inferred protein
-			// TODO: implement!
-            /*
-            Protein protein = new Protein(intermediateProtein.getAccession(),
-                    intermediateProtein.getAccession(),
-                    dbSequence, passThreshold, peptides, score, threshold, sequenceCoverage, gel);
-            */
 		}
+		//else {
+//			// create the inferred protein
+//			// TODO: implement!
+//            /*
+//            Protein protein = new Protein(intermediateProtein.getAccession(),
+//                    intermediateProtein.getAccession(),
+//                    dbSequence, passThreshold, peptides, score, threshold, sequenceCoverage, gel);
+//            */
+//		}
 		
 		return protein;
 	}

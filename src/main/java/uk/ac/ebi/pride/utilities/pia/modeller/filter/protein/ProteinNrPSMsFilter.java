@@ -77,10 +77,6 @@ public class ProteinNrPSMsFilter extends AbstractFilter {
 	
 	@Override
 	public boolean supportsClass(Object c) {
-		if (c instanceof InferenceProteinGroup) {
-			return true;
-		} else {
-			return false;
-		}
+        return c instanceof InferenceProteinGroup;
 	}
 }

@@ -30,9 +30,9 @@ public class ScoreUtilities {
 			return cvScore.getHigherScoreBetter();
 		}
 		
-		if (oboLookup) {
-			// TODO: implement
-		}
+//		if (oboLookup) {
+//			// TODO: implement
+//		}
 		
 		return false;
 	}
@@ -65,16 +65,16 @@ public class ScoreUtilities {
 			return -1;
 		} else {
 			// both scores are != null
-			if (score1.equals(Double.NaN)) {
+			if (score1 != null ? score1.equals(Double.NaN) : false) {
 				// NaN is always considered worse than anything (null likewise)
 				return 1;
-			} else if (score2.equals(Double.NaN)) {
+			} else if (score2 != null ? score2.equals(Double.NaN) : false) {
 				return -1;
 			} else {
 				if (higherScoreBetter) {
-					return -score1.compareTo(score2);
+					return -(score1 != null ? score1.compareTo(score2) : 0);
 				} else {
-					return score1.compareTo(score2);
+					return score1 != null ? score1.compareTo(score2) : 0;
 				}
 			}
 		}

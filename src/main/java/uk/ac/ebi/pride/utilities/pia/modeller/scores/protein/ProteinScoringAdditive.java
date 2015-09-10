@@ -30,48 +30,48 @@ public class ProteinScoringAdditive extends ProteinScoring {
 		
 		proteinGroup.removeAllScoringInformation();
 		
-		if (countSpectrumOnce) {
-			// filter the peptides so that a spectrum counts only once
-			/*
-			Set<Comparable> scoringPSMsIDs = new HashSet<Comparable>();
-			
-			Collections.sort(scorePeptides, new IntermediatePeptideComparator(peptideScoring));
-			
-			ListIterator<IntermediatePeptide> pepIterator = scorePeptides.listIterator();
-			while (pepIterator.hasNext()) {
-				IntermediatePeptide peptide = pepIterator.next();
-				
-				if ((peptide.getScore() != null) &&
-						!peptide.getScore().equals(Double.NaN)) {
-					boolean pepCounts = true;
-					
-					List<IntermediatePeptideSpectrumMatch> pepsPSMs =
-							new ArrayList<IntermediatePeptideSpectrumMatch>(peptide.getPSMsWithScoringType(ScoringItemType.FULL_SCORING));
-					pepsPSMs.addAll(peptide.getPSMsWithScoringType(ScoringItemType.SHARED_SCORING));
-					for (IntermediatePeptideSpectrumMatch psm : pepsPSMs) {
-						
-						
-					}
-					
-					if (pepCounts) {
-						// this peptide may be counted
-						for (IntermediatePeptideSpectrumMatch psm : pepsPSMs) {
-							scoringPSMsIDs.add(psm.getSpectrumIdentification().getSpectrum())
-							
-						}
-						
-						
-						
-					} else {
-						
-					}
-					
-					
-				}
-				
-			}
-			*/
-		}
+//		if (countSpectrumOnce) {
+//			// filter the peptides so that a spectrum counts only once
+//			/*
+//			Set<Comparable> scoringPSMsIDs = new HashSet<Comparable>();
+//
+//			Collections.sort(scorePeptides, new IntermediatePeptideComparator(peptideScoring));
+//
+//			ListIterator<IntermediatePeptide> pepIterator = scorePeptides.listIterator();
+//			while (pepIterator.hasNext()) {
+//				IntermediatePeptide peptide = pepIterator.next();
+//
+//				if ((peptide.getScore() != null) &&
+//						!peptide.getScore().equals(Double.NaN)) {
+//					boolean pepCounts = true;
+//
+//					List<IntermediatePeptideSpectrumMatch> pepsPSMs =
+//							new ArrayList<IntermediatePeptideSpectrumMatch>(peptide.getPSMsWithScoringType(ScoringItemType.FULL_SCORING));
+//					pepsPSMs.addAll(peptide.getPSMsWithScoringType(ScoringItemType.SHARED_SCORING));
+//					for (IntermediatePeptideSpectrumMatch psm : pepsPSMs) {
+//
+//
+//					}
+//
+//					if (pepCounts) {
+//						// this peptide may be counted
+//						for (IntermediatePeptideSpectrumMatch psm : pepsPSMs) {
+//							scoringPSMsIDs.add(psm.getSpectrumIdentification().getSpectrum())
+//
+//						}
+//
+//
+//
+//					} else {
+//
+//					}
+//
+//
+//				}
+//
+//			}
+//			*/
+//		}
 		
 		for (IntermediatePeptide peptide : scorePeptides) {
 			if ((peptide.getScore() != null) &&

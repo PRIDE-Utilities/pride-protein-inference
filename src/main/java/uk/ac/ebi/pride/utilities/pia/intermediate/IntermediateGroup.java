@@ -48,8 +48,8 @@ public class IntermediateGroup {
 		
 		IntermediateGroup group = (IntermediateGroup)obj;
 		
-		return (ID == group.ID) &&
-				(treeID == group.treeID) && 
+		return (ID.equals(group.ID)) &&
+				(treeID.equals(group.treeID)) &&
 				((peptides == null) ? (group.peptides == null) : peptides.equals(group.peptides)) &&
 				((children == null) ? (group.children == null) : children.equals(group.children)) &&
 				((parents == null) ? (group.parents == null) : parents.equals(group.parents)) &&
@@ -59,7 +59,7 @@ public class IntermediateGroup {
 	
 	@Override
 	public int hashCode() {
-		int result = 0;
+		int result;
 		
 		result = ID.hashCode();
 		result = 31*result + treeID.hashCode();
@@ -342,10 +342,6 @@ public class IntermediateGroup {
 	 * @return
 	 */
 	public boolean directlyConnectedToProtein(IntermediateProtein protein) {
-		if (proteins != null) {
-			return proteins.contains(protein);
-		} else {
-			return false;
-		}
-	}
+        return proteins != null && proteins.contains(protein);
+    }
 }

@@ -142,7 +142,7 @@ public class IntermediateStructureCreator {
 				logger.warn("THIS IS NOT YET IMPLEMENTED!!! Don't use multiple files yet!");
 			}
 		} else if (newProtein.getProteinSequence() != null) {
-			if (oldProtein.getProteinSequence() != newProtein.getProteinSequence()) {
+			if (!oldProtein.getProteinSequence().equals(newProtein.getProteinSequence())) {
 				logger.warn("Protein with different sequences: " + oldProtein.getAccession() +
 						", this is not supported, the first sequence is used" +
 						"\n\t" + oldProtein.getProteinSequence() +
@@ -159,7 +159,9 @@ public class IntermediateStructureCreator {
 	 * @return 
 	 */
 	public IntermediateProtein getProtein(Comparable proteinID) {
-		return proteins.get(proteinID);
+		if(proteins != null)
+           return proteins.get(proteinID);
+        return null;
 	}
 	
 	
@@ -315,7 +317,8 @@ public class IntermediateStructureCreator {
 	 * This method should only be called by
 	 * {@link IntermediateStructureCreator#buildClusterList()}
 	 */
-	private Map<Comparable, Set<String>> createCluster(String proteinAccession,
+	@SuppressWarnings("UnusedAssignment")
+    private Map<Comparable, Set<String>> createCluster(String proteinAccession,
 			Set<Comparable> peptidesDone, Set<String> proteinsDone) {
 		
 		Set<String> clusterProteins = new HashSet<String>();

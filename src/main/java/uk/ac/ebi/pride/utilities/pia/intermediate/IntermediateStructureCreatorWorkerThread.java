@@ -300,13 +300,10 @@ public class IntermediateStructureCreatorWorkerThread extends Thread {
 		}
 		
 		// check if all of the group's proteins are in the given set
-		if ((group.getProteins() != null) && 
-				!proteins.containsAll(group.getProteins())) {
-			return false;
-		}
-		
-		return true;
-	}
+        return !((group.getProteins() != null) &&
+                !proteins.containsAll(group.getProteins()));
+
+    }
 	
 	
 	/**
@@ -368,7 +365,7 @@ public class IntermediateStructureCreatorWorkerThread extends Thread {
 	private Set<Integer> getSubtreeGroups(Set<IntermediateProtein> proteins,
 			Set<Integer> remainingSet, Map<Integer, IntermediateGroup> subGroups) {
 		Set<Integer> subTreeSet = new HashSet<Integer>();
-		IntermediateGroup mostGroup = null;
+		IntermediateGroup mostGroup;
 		
 		// look for unassigned dbSequences
 		for (IntermediateProtein protein : proteins) {

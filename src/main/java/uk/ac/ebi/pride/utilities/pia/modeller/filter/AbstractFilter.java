@@ -140,86 +140,78 @@ public abstract class AbstractFilter {
 		if (objValue != null) {
 			
 			switch (getFilterType()) {
-			case bool:
-				if (objValue instanceof Boolean) {
-					return satisfiesBooleanFilter((Boolean)objValue);
-				} else if (objValue instanceof Collection<?>) {
-					for (Object obj : (Collection<?>)objValue) {
-						// if any of the objects in the collection does not satisfy the filter or is not numerical, return false 
-						if (obj instanceof Boolean) {
-							if (!satisfiesBooleanFilter((Boolean)obj)) {
-								return false;
-							}
-						} else {
-							return false;
-						}
-					}
-					// all objects in collection satisfy the filter, return true
-					return true;
-				} else {
-					// TODO: throw exception or something
-					return false;
-				}
-			
-			case numerical:
-				if (objValue instanceof Number) {
-					return satisfiesNumericalFilter((Number)objValue);
-				} else if (objValue instanceof Collection<?>) {
-					for (Object obj : (Collection<?>)objValue) {
-						// if any of the objects in the collection does not satisfy the filter or is not numerical, return false 
-						if (obj instanceof Number) {
-							if (!satisfiesNumericalFilter((Number)obj)) {
-								return false;
-							}
-						} else {
-							return false;
-						}
-					}
-					// all objects in collection satisfy the filter, return true
-					return true;
-				} else {
-					// TODO: throw exception or something
-					return false;
-				}
-				
-			case literal:
-				if (objValue instanceof String) {
-					return satisfiesLiteralFilter((String)objValue);
-				} else if(objValue instanceof Collection<?>) {
-					for (Object obj : (Collection<?>)objValue) {
-						// if any of the objects in the collection does not satisfy the filter or is no String, return false 
-						if (obj instanceof String) {
-							if (!satisfiesLiteralFilter((String)obj)) {
-								return false;
-							}
-						} else {
-							return false;
-						}
-					}
-					// all objects in collection satisfy the filter, return true
-					return true;
-				} else {
-					// TODO: throw exception or something
-					return false;
-				}
-				
-			case literal_list:
-				if (objValue instanceof List<?>) {
-					return satisfiesLiteralListFilter((List<String>)objValue);
-				} else {
-					// TODO: throw exception or something
-					return false;
-				}
-				
-			case modification:
-				if (objValue instanceof List<?>) {
-					/* TODO: reactivate modification */
-					return satisfiesModificationFilter((List<Modification>)objValue);
-				} else {
-					// TODO: throw exception or something
-					return false;
-				}
-			}
+                case bool:
+                    if (objValue instanceof Boolean) {
+                        return satisfiesBooleanFilter((Boolean) objValue);
+                    } else if (objValue instanceof Collection<?>) {
+                        for (Object obj : (Collection<?>) objValue) {
+                            // if any of the objects in the collection does not satisfy the filter or is not numerical, return false
+                            if (obj instanceof Boolean) {
+                                if (!satisfiesBooleanFilter((Boolean) obj)) {
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                        // all objects in collection satisfy the filter, return true
+                        return true;
+                    } else {
+                        // TODO: throw exception or something
+                        return false;
+                    }
+
+                case numerical:
+                    if (objValue instanceof Number) {
+                        return satisfiesNumericalFilter((Number) objValue);
+                    } else if (objValue instanceof Collection<?>) {
+                        for (Object obj : (Collection<?>) objValue) {
+                            // if any of the objects in the collection does not satisfy the filter or is not numerical, return false
+                            if (obj instanceof Number) {
+                                if (!satisfiesNumericalFilter((Number) obj)) {
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                        // all objects in collection satisfy the filter, return true
+                        return true;
+                    } else {
+                        // TODO: throw exception or something
+                        return false;
+                    }
+
+                case literal:
+                    if (objValue instanceof String) {
+                        return satisfiesLiteralFilter((String) objValue);
+                    } else if (objValue instanceof Collection<?>) {
+                        for (Object obj : (Collection<?>) objValue) {
+                            // if any of the objects in the collection does not satisfy the filter or is no String, return false
+                            if (obj instanceof String) {
+                                if (!satisfiesLiteralFilter((String) obj)) {
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                        // all objects in collection satisfy the filter, return true
+                        return true;
+                    } else {
+                        // TODO: throw exception or something
+                        return false;
+                    }
+
+                case literal_list:
+                    return objValue instanceof List<?> && satisfiesLiteralListFilter((List<String>) objValue);
+// TODO: throw exception or something
+
+                case modification:
+                    /* TODO: reactivate modification */
+                    return objValue instanceof List<?> && satisfiesModificationFilter((List<Modification>) objValue);
+// TODO: throw exception or something
+            }
 			
 		}
 		
@@ -413,48 +405,48 @@ public abstract class AbstractFilter {
 		case has_description:
 			// check, if the list of modifications has the given description
 			boolean has_description = false;
-			if (o != null) {
-				for (Modification mod : o) {
-					/* TODO: reactivate modification
-					if ((mod.getDescription() != null) &&
-							(mod.getDescription().equals((String)getFilterValue()))) {
-						has_description = true;
-						break;
-					}
-					*/
-				}
-			}
+//			if (o != null) {
+////				for (Modification mod : o) {
+////					/* TODO: reactivate modification
+////					if ((mod.getDescription() != null) &&
+////							(mod.getDescription().equals((String)getFilterValue()))) {
+////						has_description = true;
+////						break;
+////					}
+////					*/
+////				}
+//			}
 			return getFilterNegate() ^ has_description;
 		
 		case has_mass:
 			// check, if the list of modifications has the given mass
 			boolean has_mass = false;
-			if (o != null) {
-				for (Modification mod : o) {
-					/*
-					if (mod.getMassString().equals((String)getFilterValue())) {
-						has_mass = true;
-						break;
-					}
-					*/
-				}
-			}
+//			if (o != null) {
+////				for (Modification mod : o) {
+////					/*
+////					if (mod.getMassString().equals((String)getFilterValue())) {
+////						has_mass = true;
+////						break;
+////					}
+////					*/
+////				}
+//			}
 			return getFilterNegate() ^ has_mass;
 		
 		case has_residue:
 			// check, if the list of modifications has the given residue (but modification does not have to be on this residue)
 			boolean has_residue = false;
-			if (o != null) {
-				for (Modification mod : o) {
-					/*
-					if ((mod.getResidue() != null) &&
-							mod.getResidue().toString().startsWith((String)getFilterValue())) {
-						has_residue = true;
-						break;
-					}
-					*/
-				}
-			}
+//			if (o != null) {
+////				for (Modification mod : o) {
+////					/*
+////					if ((mod.getResidue() != null) &&
+////							mod.getResidue().toString().startsWith((String)getFilterValue())) {
+////						has_residue = true;
+////						break;
+////					}
+////					*/
+////				}
+//			}
 			return getFilterNegate() ^ has_residue;
 		}
 		

@@ -52,8 +52,8 @@ public class PSMScoreFilter extends AbstractFilter {
 			this.value = value;
 			this.negate = negate;
 			
-			this.name = cvScore.getName() + " Filter for PSM";
-			this.filteringName = cvScore.getName() + " (PSM)";
+			this.name = (cvScore != null ? cvScore.getName() : null) + " Filter for PSM";
+			this.filteringName = (cvScore != null ? cvScore.getName() : null) + " (PSM)";
 			this.shortName = prefix + cvScore.getAccession();
 		} else {
 			this.comparator = null;

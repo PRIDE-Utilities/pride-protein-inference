@@ -150,7 +150,7 @@ public class ReportAllInference extends AbstractProteinInference {
 					
 					// check against the other report groups
 					for (IntermediateGroup checkGroup : clusterReportGroups) {
-						if (gIt.getKey() == checkGroup.getID()) {
+						if (gIt.getKey().equals(checkGroup.getID())) {
 							// don't check against self
 							continue;
 						}
@@ -205,7 +205,7 @@ public class ReportAllInference extends AbstractProteinInference {
 				
 				if (sameSets != null) {
 					for (IntermediateGroup sameGroup : sameSets.get(group.getID())) {
-						if (sameGroup.getID() == group.getID()) {
+						if (sameGroup.getID().equals(group.getID())) {
 							continue;
 						}
 						

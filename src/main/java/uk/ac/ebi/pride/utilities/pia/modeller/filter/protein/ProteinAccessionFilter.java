@@ -68,11 +68,7 @@ public class ProteinAccessionFilter extends AbstractFilter {
 
 	@Override
 	public boolean supportsClass(Object c) {
-		if (c instanceof IntermediateProtein) {
-			return true;
-		} else {
-			return false;
-		}
+        return c instanceof IntermediateProtein;
 	}
 
 }

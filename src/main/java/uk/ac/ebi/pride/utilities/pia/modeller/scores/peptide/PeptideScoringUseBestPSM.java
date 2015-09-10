@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.utilities.pia.modeller.scores.peptide;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediatePeptide;
@@ -34,8 +35,9 @@ public class PeptideScoringUseBestPSM extends PeptideScoring {
 		List<IntermediatePeptideSpectrumMatch> scoringPSM = new ArrayList<IntermediatePeptideSpectrumMatch>();
 		
 		intermediatePeptide.removeAllScoringInformation();
-		
-		for (IntermediatePeptideSpectrumMatch psm : intermediatePeptide.getPeptideSpectrumMatches()) {
+        Iterator<IntermediatePeptideSpectrumMatch> itPSM = intermediatePeptide.getPeptideSpectrumMatches().iterator();
+		while(itPSM.hasNext()) {
+            IntermediatePeptideSpectrumMatch psm = itPSM.next();
 			Double score = psm.getScore(baseScoreAccession);
 			
 			if (bestScore.equals(Double.NaN) ||
@@ -51,7 +53,9 @@ public class PeptideScoringUseBestPSM extends PeptideScoring {
 		
 		if (scoringPSM.size() > 0) {
 			boolean isFirst = true;
-			for (IntermediatePeptideSpectrumMatch psm : scoringPSM) {
+            Iterator<IntermediatePeptideSpectrumMatch> itMatch = scoringPSM.iterator();
+			while(itMatch.hasNext()) {
+                IntermediatePeptideSpectrumMatch psm = itMatch.next();
 				// set just the first of the scoring PSMs to fully scoring
 				intermediatePeptide.setPSMsScoringType(psm,
 						isFirst ? ScoringItemType.FULL_SCORING : ScoringItemType.SHARED_SCORING);

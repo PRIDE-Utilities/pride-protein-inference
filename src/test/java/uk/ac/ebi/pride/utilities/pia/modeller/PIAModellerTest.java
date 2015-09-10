@@ -8,10 +8,8 @@ import uk.ac.ebi.pride.jmztab.utils.MZTabFileConverter;
 import uk.ac.ebi.pride.utilities.data.controller.impl.ControllerImpl.MzIdentMLControllerImpl;
 import uk.ac.ebi.pride.utilities.data.exporters.AbstractMzTabConverter;
 import uk.ac.ebi.pride.utilities.data.exporters.HQMzIdentMLMzTabConverter;
-import uk.ac.ebi.pride.utilities.data.exporters.MzIdentMLMzTabConverter;
 import uk.ac.ebi.pride.utilities.pia.intermediate.IntermediateProtein;
 import uk.ac.ebi.pride.utilities.pia.intermediate.prideimpl.PrideIntermediateProtein;
-import uk.ac.ebi.pride.utilities.pia.modeller.filter.AbstractFilter;
 import uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.InferenceProteinGroup;
 import uk.ac.ebi.pride.utilities.pia.modeller.protein.inference.OccamsRazorInference;
 import uk.ac.ebi.pride.utilities.pia.modeller.scores.CvScore;
@@ -25,8 +23,6 @@ import uk.ac.ebi.pride.utilities.term.SearchEngineScoreCvTermReference;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
-
-import static org.junit.Assert.*;
 
 public class PIAModellerTest {
 
@@ -106,7 +102,7 @@ public class PIAModellerTest {
 
         for (InferenceProteinGroup piaGroup : piaModeller.getProteinModeller().getInferredProteins()) {
 
-            Map<Comparable, List<Comparable>> proteinPeptideMap = null;
+            Map<Comparable, List<Comparable>> proteinPeptideMap;
 
             Set<IntermediateProtein> proteinSet = new HashSet<IntermediateProtein>(piaGroup.getProteins());
 

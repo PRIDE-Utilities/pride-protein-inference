@@ -231,16 +231,13 @@ public class InferenceProteinGroup {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
+        if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-		
-		InferenceProteinGroup group = (InferenceProteinGroup)obj;
-		
-		if (ID != group.ID) return false;
-		return !((proteins != null) ? !proteins.equals(group.proteins) : (group.proteins != null)) &&
-				!((intermediatePeptides != null) ? !intermediatePeptides.equals(group.intermediatePeptides) : (group.intermediatePeptides != null)) &&
-				!((subGroups != null) ? !subGroups.equals(group.subGroups) : (group.subGroups != null));
-	}
+
+        InferenceProteinGroup group = (InferenceProteinGroup) obj;
+
+        return ID.equals(group.ID) && !((proteins != null) ? !proteins.equals(group.proteins) : (group.proteins != null)) && !((intermediatePeptides != null) ? !intermediatePeptides.equals(group.intermediatePeptides) : (group.intermediatePeptides != null)) && !((subGroups != null) ? !subGroups.equals(group.subGroups) : (group.subGroups != null));
+    }
 	
 	
 	@Override
