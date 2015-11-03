@@ -58,7 +58,7 @@ public class PIAModellerTest {
         MZTabFileConverter checker = new MZTabFileConverter();
         checker.check(mzTabFile);
     }
-
+    
     private void runDefaultProteinInference(){
         PIAModeller piaModeller = new PIAModeller();
 
@@ -121,4 +121,95 @@ public class PIAModellerTest {
         }
         controller.setInferredProteinGroups(prideProteinGroupMapping);
     }
+    
+    
+	@Test
+	public void inferenceFromMultipleFiles() {
+		// this test performs a protein inference on multiple MS-GF+ files
+		
+		// setting the main score for these data
+		String scoreAccession = "MS:1002053";
+		CvScore cvScore = CvScore.PSI_MSGF_EVALUE;
+		
+		MzIdentMLControllerImpl controller1 = null;
+		MzIdentMLControllerImpl controller2 = null;
+		MzIdentMLControllerImpl controller3 = null;
+		
+		try {
+			URL url = PIAModellerTest.class.getClassLoader().getResource("PXD001428/F1_20150223_Agilent5_PG_incl_list_AspN_A[Node_05].mzid");
+	        File inputFile = new File(url.toURI());
+	        controller1 = new MzIdentMLControllerImpl(inputFile);
+			
+			url = PIAModellerTest.class.getClassLoader().getResource("PXD001428/F1_20150223_Agilent5_PG_incl_list_AspN_A[Node_08].mzid");
+	        inputFile = new File(url.toURI());
+	        controller2 = new MzIdentMLControllerImpl(inputFile);
+	        
+			url = PIAModellerTest.class.getClassLoader().getResource("PXD001428/F1_20150223_Agilent5_PG_incl_list_AspN_B[Node_05].mzid");
+	        inputFile = new File(url.toURI());
+	        controller3 = new MzIdentMLControllerImpl(inputFile);
+		} catch (Exception e) {
+			throw new IllegalStateException("Problem reading file!", e);
+		}
+		
+		
+		PIAModeller piaModeller = new PIAModeller();
+		
+		// add the input file to modeller and import data
+		Integer controllerID1 = piaModeller.addPrideControllerAsInput(controller1);
+		piaModeller.importAllDataFromFile(controllerID1);
+		
+		Integer controllerID2 = piaModeller.addPrideControllerAsInput(controller2);
+		piaModeller.importAllDataFromFile(controllerID2);
+		
+		Integer controllerID3 = piaModeller.addPrideControllerAsInput(controller3);
+		piaModeller.importAllDataFromFile(controllerID3);
+		
+		// first create the intermediate structure from the data given by the controller
+		piaModeller.buildIntermediateStructure();
+		
+		// score the peptides
+		PeptideScoring pepScoring = new PeptideScoringUseBestPSM(scoreAccession, false);
+		ProteinScoring protScoring;
+		if ((cvScore != null) && !cvScore.getHigherScoreBetter()) {
+		    protScoring = new ProteinScoringMultiplicative(false, pepScoring);
+		} else {
+		    protScoring = new ProteinScoringAdditive(false, pepScoring);
+		}
+		
+		// perform the protein inferences
+		piaModeller.getProteinModeller().infereProteins(pepScoring, protScoring, OccamsRazorInference.class, null, false);
+		
+		// create the protein groups
+		int nrGroups = piaModeller.getProteinModeller().getInferredProteins().size();
+		Map<Comparable, Map<Comparable, List<Comparable>>> prideProteinGroupMapping = new HashMap<Comparable, Map<Comparable,List<Comparable>>>(nrGroups);
+		
+		for (InferenceProteinGroup piaGroup : piaModeller.getProteinModeller().getInferredProteins()) {
+			Map<Comparable, List<Comparable>> proteinPeptideMap;
+			
+			Set<IntermediateProtein> proteinSet = new HashSet<IntermediateProtein>(piaGroup.getProteins());
+			
+			// include the subGroups
+			for (InferenceProteinGroup subGroup : piaGroup.getSubGroups()) {
+			    proteinSet.addAll(subGroup.getProteins());
+			}
+			
+			proteinPeptideMap = new HashMap<Comparable, List<Comparable>>(proteinSet.size());
+			
+			for (IntermediateProtein protein : proteinSet) {
+			    Comparable proteinID = ((PrideIntermediateProtein)protein).getPrideProteinID();
+			    proteinPeptideMap.put(proteinID, null);
+			}
+			prideProteinGroupMapping.put(piaGroup.getID(), proteinPeptideMap);
+		}
+		
+		// TODO: this needs another controller, everything below will not work
+		/*
+		controller1.setInferredProteinGroups(prideProteinGroupMapping);
+		
+		AbstractMzTabConverter mzTabconverter = new HQMzIdentMLMzTabConverter(controller1);
+		MZTabFile mzTabFile = mzTabconverter.getMZTabFile();
+		MZTabFileConverter checker = new MZTabFileConverter();
+		checker.check(mzTabFile);
+		*/
+	}
 }
