@@ -40,14 +40,10 @@ public class IntermediateStructureCreator {
 	
 	/** mapping from the peptide IDs to connected proteins' accessions */
 	private Map<Comparable, Set<String>> peptidesToProteinsMapping;
-	
-	
-	
+
 	/** iterates over the clustered list of peptide -> proteins mapping */
 	private ListIterator<Map<Comparable, Set<String>>> clusterIterator;
-	
-	
-	
+
 	
 	/** the created intermediate structure */
 	private IntermediateStructure intermediateStructure;

@@ -45,7 +45,11 @@ public enum CvScore{
 	PSI_MSGF_EVALUE("MS", "MS:1002053", "MS-GF E-value", false, true),
 	PSI_MSGF_QVALUE("MS", "MS:1002054", "MS-GF Q-value", false, false),
 	PSI_MSGF_PEPQVALUE("MS", "MS:1002055", "MS-GF peptide-level Q-value", false, false),
-	
+
+	MS_PROLUCID_XSCORE("MS", "MS:1002534", "The ProLuCID result 'XCorr'", true, true),
+	MS_PROLUCID_DELTA("MS", "MS:1002535", "The ProLuCID result 'DeltaCn'", true, false),
+
+
 	// Paragon
 	//PSI_PARAGON_SCORE("MS", "MS:1001166", "Paragon:score", "MS:1001153"),
 	
