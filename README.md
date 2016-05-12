@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/PRIDE-Utilities/pride-protein-inference.svg?branch=master)](https://travis-ci.org/PRIDE-Utilities/pride-protein-inference)
 pia-core-library
 ================
 
