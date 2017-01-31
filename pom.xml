@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.ebi.pride.utilities</groupId>
     <artifactId>pride-protein-inference</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8-SNAPSHOT</version>
     <name>PIA core library</name>
     <description>The PIA - Protein Inference Algorithms core library</description>
     <url>http://github.com/PRIDE-Utilities/pride-protein-inference</url>
@@ -78,6 +78,6 @@
         <developerConnection>scm:git:https://github.com/PRIDE-Utilities/pride-protein-inference.git
         </developerConnection>
         <url>https://github.com/PRIDE-Utilities/pride-protein-inference.git</url>
-        <tag>pride-protein-inference-0.0.7</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
