@@ -17,6 +17,10 @@
     <!-- LICENSE - from parent POM -->
     <!-- ORGANIZATION - from parent POM -->
 
+    <properties>
+        <uk.ac.ebi.pride.utilities-ms-data-core-api.version>2.0.12</uk.ac.ebi.pride.utilities-ms-data-core-api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -36,7 +40,7 @@
         <dependency>
             <groupId>uk.ac.ebi.pride.utilities</groupId>
             <artifactId>ms-data-core-api</artifactId>
-            <version>2.0.7</version>
+            <version>${uk.ac.ebi.pride.utilities-ms-data-core-api.version}</version>
         </dependency>
     </dependencies>
 
