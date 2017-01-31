@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.ac.ebi.pride.utilities</groupId>
     <artifactId>pride-protein-inference</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.7</version>
     <name>PIA core library</name>
     <description>The PIA - Protein Inference Algorithms core library</description>
     <url>http://github.com/PRIDE-Utilities/pride-protein-inference</url>
@@ -67,7 +66,7 @@
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
                     <excludeTransitive>false</excludeTransitive>
-                    <artifactItems/>
+                    <artifactItems />
                 </configuration>
             </plugin>
         </plugins>
@@ -79,6 +78,6 @@
         <developerConnection>scm:git:https://github.com/PRIDE-Utilities/pride-protein-inference.git
         </developerConnection>
         <url>https://github.com/PRIDE-Utilities/pride-protein-inference.git</url>
-        <tag>HEAD</tag>
+        <tag>pride-protein-inference-0.0.7</tag>
     </scm>
 </project>
