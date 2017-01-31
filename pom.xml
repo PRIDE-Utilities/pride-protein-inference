@@ -153,8 +153,8 @@
 
     <!--scm git config-->
     <scm>
-        <connection>scm:git:github.com/PRIDE-Utilities/pride-protein-inference.git</connection>
-        <developerConnection>scm:git:git@github.com:PRIDE-Utilities/pride-protein-inference.git</developerConnection>
+        <connection>scm:git:https://github.com/PRIDE-Utilities/pride-protein-inference.git</connection>
+        <developerConnection>scm:git:https://github.com/PRIDE-Utilities/pride-protein-inference.git</developerConnection>
         <url>https://github.com/PRIDE-Utilities/pride-protein-inference.git</url>
         <tag>HEAD</tag>
     </scm>
